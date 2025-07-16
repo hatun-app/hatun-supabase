@@ -1,0 +1,705 @@
+/* Estilos para la sección de ejercicios */
+
+/* Estilo global */ 
+* 
+{
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    box-sizing: border-box;
+    
+}
+
+/* Clase para ocultar elementos */
+.hidden 
+{
+    display: none !important;
+}
+
+/* Estilos para el encabezado principal */
+.app-header 
+{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #FFFCF9;
+    border-bottom: 2px solid #C14B36;
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: 70px;
+}
+
+/* Estilos para el logo */
+.app-logo 
+{
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: #C14B36;
+    background-color: #FFFCF9;
+    border-radius: 4px;
+}
+
+/* Estilo para la imagen del logo */
+.app-logo .logo-image 
+{
+    height: 36px;
+    width: auto;
+}
+
+/* Estilo para el centro del encabezado */
+.header-center 
+{
+    flex: 1;
+    text-align: left;
+    margin: 0 20px;
+}
+
+/* Estilo para el nombre del tema */
+.exercise-header 
+{
+    font-weight: 500;
+    color: #343a40;
+    margin-bottom: 5px;
+}
+
+/* Contenedor de la barra de progreso en el header */
+.progress-container 
+{
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Barra de progreso */
+.progress-bar-container 
+{
+    height: 6px;
+    background-color: #e0e0e0;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 3px;
+    width: 50%;
+}
+
+/* Estilo para el relleno de la barra de progreso */
+.progress-bar-fill 
+{
+    height: 100%;
+    background-color: #A8330E;
+    transition: width 0.3s ease;
+}
+
+/* Texto que acompaña a la barra de progreso */
+.progress-text 
+{
+    color: #666;
+    display: inline-block;
+}
+
+/* Estilo para el contenedor derecho del encabezado */
+.header-right 
+{
+    display: flex;
+    align-items: center;
+}
+
+/* Estilos para el cronómetro del modo práctica */
+.practice-timer 
+{
+    display: flex;
+    align-items: center;
+    background-color: #FFFAF5;
+    padding: 8px 15px;
+    border-radius: 20px;
+    margin-right: 15px;
+    border: 1px solid rgba(199, 90, 59, 0.3);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para el icono del cronómetro */
+.practice-timer .timer-icon 
+{
+    color: #C75A3B;
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+/* Estilos para el texto del cronómetro */
+.practice-timer .timer-text 
+{
+    color: #8C3C2C;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/* Estilos para el texto de alerta en el cronómetro */
+.timer-text-alert 
+{
+    color: #e74c3c;
+}
+
+/* Estilo para el botón que lleva a la página del curso */     
+.page-button 
+{
+    padding: 8px 15px;
+    background-color: #FFFAF5;
+    border: 1px solid #A8330E;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+/* Contenedor principal de dos columnas */
+.content-container 
+{
+    display: flex;
+    height: calc(100vh - 70px);
+    overflow: hidden;
+    display: flex;
+    flex-direction: row-reverse; 
+    overflow: hidden; 
+    margin-top: 0; 
+}
+
+/* Estilos para la sección de ejercicios */
+.exercise-screen 
+{
+    background-color: #FFFCF9;
+    display: none;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Sección principal (izquierda) */
+.exercise-section 
+{
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    background-color: #FFFCF9;
+}
+
+/* Contenedor para los anuncios de Google */
+.ad-banner-container 
+{
+    width: 100%;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    padding: 10px;
+    text-align: center;
+    box-sizing: border-box;
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* Estilos de la sección del ejercicio */
+.exercise-content 
+{
+    background-color: #FFFCF9;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+    line-height: 1.6; 
+    color: #343a40; 
+    letter-spacing: 0.03em; 
+    word-spacing: 0.05em; 
+    margin: 0 auto 20px;
+    padding: 30px;
+    text-rendering: optimizeLegibility;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-wrap: break-word;
+}
+
+/* Contenedor de la pregunta */
+.question-container 
+{
+    text-align: left;
+    padding-bottom: 20px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    min-width: 0; 
+}
+
+/* Contenedor de las opciones */
+.exercise-options 
+{
+    margin-bottom: 20px;
+}
+
+/* Botones de las opciones */
+.option-button 
+{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    background-color: #F8F8F8;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* Efecto al pasar al mouse sobre los botones de las opciones */
+.option-button:hover 
+{
+    background-color: #e8e9ea;
+    border-color: #ccc;
+}
+
+/* Letra de las opciones */
+.option-letter 
+{
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: #f0f0f0;
+    color: #333;
+    margin-right: 12px;
+    font-weight: 500;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    line-height: 1;
+
+}
+
+/* Texto de las opciones */
+.option-text 
+{
+    flex: 1;
+    flex-grow: 1;
+    line-height: 1.4;
+}
+
+/* Estilos para opción correcta */
+.option-button.correct 
+{
+    background-color: #e8f5e9;
+    border-color: #4caf50;
+    color: #2e7d32;
+}
+
+/* Letra de la opción correcta */
+.option-button.correct .option-letter 
+{
+    background-color: #4caf50;
+    color: white;
+}
+
+/* Estilos para opción incorrecta */
+.option-button.incorrect 
+{
+    background-color: #ffebee;
+    border-color: #ef9a9a;
+    color: #c62828;
+}
+
+/* Letra de la opción incorrecta */
+.option-button.incorrect .option-letter 
+{
+    background-color: #ef9a9a;
+    color: #c62828;
+}
+
+/* Estilos para opción seleccionada */
+.option-button.selected 
+{
+    background-color: #e3f2fd;
+    border-color: #2196f3;
+    color: #0d47a1;
+    box-shadow: 0 0 5px rgba(33, 150, 243, 0.3);
+}
+
+/* Letra de la opción seleccionada */
+.option-button.selected .option-letter 
+{
+    background-color: #2196f3;
+    color: white;
+}
+
+/* Estilos para la fila de botones */
+.button-row 
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding-top: 10px;
+    width: 100%;
+}
+
+/* Estilos de los botones */
+.button 
+{
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    border-color: #DB9069;
+    border-width: 1px;
+    transition: background-color 0.2s ease;
+}
+
+/* Estilos para la barra lateral de ejercicios */
+.exercises-sidebar 
+{
+    width: 300px; 
+    background-color: #FFFCF9;
+    border-left: 1px solid #e9ecef; 
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Contenido de la barra lateral */
+.sidebar-content 
+{
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+/* Lista de ejercicios */
+.exercises-list 
+{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Ítems de la lista */
+.exercise-item 
+{
+    padding: 12px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease;
+    transition: background-color 0.2s;
+    background-color: #FFFCF9;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+
+}
+
+/* Contenedor del Icono de la lista de ejercicios */
+.exercise-icon
+{
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: #DB9069;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+    flex-shrink: 0;
+    font-size: 16px;
+    box-shadow: 0 3px 6px rgba(219, 144, 105, 0.3);
+    transition: all 0.2s ease;
+}
+
+/* Icono de la lista de ejercicios */
+.exercise-icon i 
+{
+    font-size: 14px;
+}
+
+/* Nombre del ejercicio */
+.exercise-name 
+{
+    font-weight: 500;
+    color: #343a40;
+    font-size: 14px;
+}
+
+/* Estilo para el elemento de ejercicio activo */
+.exercise-item.active 
+{
+    background-color: #ffede3;
+    border-left: 3px solid #DB9069;
+    box-shadow: 0 2px 6px rgba(219, 144, 105, 0.25);
+}
+
+/* Estilo para el icono del ejercicio activo */
+.exercise-item.active .exercise-icon
+{
+    background-color: #c13636;
+    box-shadow: 0 3px 8px rgba(193, 54, 54, 0.4);
+}
+
+/* Estilo para el texto del ejercicio activo */
+.exercise-item.active .exercise-name 
+{
+    font-weight: 700;
+    color: #A8330E;
+}
+
+/* Estilo para ejercicios respondidos */
+.exercise-item.answered 
+{
+    background-color: rgba(33, 150, 243, 0.15); 
+    border-left: 3px solid #2196f3;
+    box-shadow: 0 2px 5px rgba(33, 150, 243, 0.2);
+}
+
+/* Estilo para el icono del ejercicio respondido */
+.exercise-item.answered .exercise-icon 
+{
+    background-color: #2196f3;
+    box-shadow: 0 3px 6px rgba(33, 150, 243, 0.3);
+}
+
+/* Estilo para el texto del ejercicio respondido */
+.exercise-item.answered .exercise-name 
+{
+    color: #0d47a1; 
+}
+
+/* Estilos para el modal de confirmación */
+#modal-overlay 
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+/* Contenido del modal de confirmación */
+.modal-container 
+{
+    background-color: #FFFAF5;;
+    border-radius: 10px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    max-width: 90%;
+}
+
+/* Título del modal de confirmación */
+.modal-title 
+{
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+/* Mensaje del modal de confirmación */
+.modal-message 
+{
+    margin-bottom: 20px;
+    color: #555;
+}
+
+/* Sección de botones del modal */
+.modal-buttons 
+{
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* Estilo general de los botones del modal */
+.btn 
+{
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Botón de cancelar */
+.btn-cancel 
+{
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+}
+
+/* Botón de confirmar */
+.btn-confirm 
+{
+    border: none;
+    background-color: #e74c3c;
+    color: white;
+}
+
+/* Estilos para el contenedor de la pantalla de resultados */
+.results-screen 
+{
+    padding: 20px 20px 0 20px;
+    max-width: 900px;
+    margin: 40px auto 0;
+    background-color: #FFFAF5;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+}
+
+/* Estilos para el encabezado de la pantalla de resultados */
+.results-header 
+{
+    margin-bottom: 30px;
+    text-align: center;
+    border-bottom: 2px solid rgba(199, 90, 59, 0.3);
+    padding-bottom: 15px;
+}
+
+/* Estilos para el título de la pantalla de resultados */
+.results-title 
+{
+    margin-bottom: 15px;
+    color: #C14B36;
+    font-weight: 600;
+    font-size: 24px;
+}
+
+/* Estilos para el nombre del tema de la pantalla de resultados */
+.results-topic-name 
+{
+    color: #8C3C2C;
+    font-weight: 500;
+    font-size: 24px;
+}
+
+/* Estilos para la cuadrícula de estadísticas */
+.stats-grid 
+{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+/* Estilos para el contenedor de estadísticas */
+.stats-card 
+{
+    background-color: rgba(255, 250, 245, 0.7);
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 3px 10px rgba(193, 75, 54, 0.15);
+    border-top: 3px solid #C75A3B;
+}
+
+/* Estilos para los elementos de estadísticas */
+.stat-item 
+{
+    text-align: center;
+    padding: 15px;
+    background-color: rgba(255, 250, 245, 0.7);
+    border-radius: 8px;
+    border: 1px solid rgba(199, 90, 59, 0.2);
+    transition: all 0.3s ease;
+}
+
+/* Estilos para el efecto de los elementos de estadísticas al pasar el mouse */
+.stat-item:hover 
+{
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(199, 90, 59, 0.2);
+}
+
+/* Estilos para el icono de las estadísticas */
+.stat-icon 
+{
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+/* Estilos para el valor de las estadísticas */
+.stat-value 
+{
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+/* Estilos para el texto de las estadísticas */
+.stat-label 
+{
+    color: #8C3C2C;
+    font-weight: 500;
+}
+
+/* Clases de color para estadísticas */
+.color-green 
+{
+    color: #57865C; /* Verde Hatun */
+}
+
+.color-orange 
+{
+    color: #E08653; /* Naranja Hatun */
+}
+
+.color-red 
+{
+    color: #C14B36; /* Rojo Hatun */
+}
+
+.color-blue 
+{
+    color: #5D82A6; /* Azul Hatun */
+}
+
+.color-purple 
+{
+    color: #8C5978; /* Púrpura Hatun */
+}
+
+.color-grey 
+{
+    color: #8C7A6B; /* Gris Hatun */
+}
+
+/* Estilo para el botón de regreso */
+.back-button 
+{
+    padding: 12px 25px;
+    margin: 30px auto;
+    display: block;
+    background-color: #C75A3B;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 8px rgba(199, 90, 59, 0.2);
+}
+
+/* Estilo para el botón de regreso al pasar el mouse */
+.back-button:hover 
+{
+    background-color: #8C3C2C;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(140, 60, 44, 0.3);
+}

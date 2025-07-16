@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hatun - Modo Práctica</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/learning.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Google AdSense Script -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <p>Cargando...</p>
+    </div>
+    
+    <div id="app">
+        
+        <!-- Pantalla de ejercicios -->
+        <div id="exercise-screen" class="screen active">
+            <header class="app-header">
+                <div class="header-left">
+                    <div class="app-logo"><img src="img/logo.svg" alt="Logo" class="logo-image"></div>
+                </div>
+                <div class="header-center">
+                    <div class="exercise-header" id="exercise-topic-title">Título del Tema</div>
+                    <div class="progress-container">
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" style="width: 0%;"></div>
+                        </div>
+                        <div class="progress-text">0% Completado</div>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="page-button" title="Página del Curso" onclick="window.location.href='topics.html'">
+                        Página del Curso
+                    </button>
+                </div>
+            </header>
+            
+            <!-- Contenedor principal con dos columnas -->
+            <div class="content-container">
+                <!-- Columna izquierda para selector de ejercicios -->
+                <div class="exercises-sidebar">
+                    <div class="sidebar-content">
+                        <div class="exercises-list" id="exercises-list">
+                            <!-- La lista de ejercicios se cargará dinámicamente aquí -->
+                            <div class="loading-state">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <p>Cargando ejercicios...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Columna derecha para el contenido del ejercicio -->
+                <div class="exercise-section">
+                    <!-- Banner de anuncios de Google que rota cada minuto -->
+                    <div id="ad-container" class="ad-banner-container">
+                        <!-- Los anuncios rotativos se cargarán dinámicamente aquí -->
+                    </div>
+                    
+                    <div class="exercise-content" id="exercise-content">
+                                <!-- El contenido del ejercicio se cargará dinámicamente aquí -->
+                                <div class="loading-state">
+                                    <i class="fas fa-spinner fa-spin fa-2x"></i>
+                                    <p>Cargando ejercicio...</p>
+                                </div>
+                            </div>
+                            
+                        
+                            
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Cargar dependencias -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    
+    <!-- Cargar el módulo principal -->
+    <script type="module" src="js/learning.js"></script>
+</body>
+</html>

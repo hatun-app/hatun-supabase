@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hatun - Selección de Modo</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/modes.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <p>Cargando...</p>
+    </div>
+    
+    <div id="app">
+        <!-- Redirigir a login.html si no hay usuario autenticado -->
+        <script>
+            // Comprobar si el usuario no está autenticado
+            if (!localStorage.getItem('user')) {
+                window.location.href = 'login.html';
+            }
+        </script>
+        
+        <!-- Pantalla de selección de modo -->
+        <div id="mode-selection" class="screen active">
+            <header class="app-header">
+                <div class="app-logo">
+                    <img src="img/logo.svg" alt="App Educativa Logo" class="logo-image">
+                </div>
+                <div class="header-buttons">
+                    <button id="profile-button" class="profile-button" onclick="window.location.href='profile.html'">
+                        <i class="fas fa-user"></i>
+                    </button>
+                </div>
+            </header>
+            
+            <!-- Tarjetas de modo -->
+            <div class="mode-container">
+                <div class="mode-card" id="theory-mode">
+                    <div class="mode-icon">
+                        <i class="fas fa-book-reader"></i>
+                    </div>
+                    <h3>Explorador de la Sabiduría</h3>
+                    <h3>(Modo Teoría)</h3>
+                    <p>Sumérgete en los fundamentos con nuestros textos sagrados.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-book-open"></i> Crónicas detalladas</li>
+                        <li><i class="fas fa-compass"></i> Viaja libremente por el conocimiento</li>
+                        <li><i class="fas fa-hourglass"></i> El tiempo es tuyo</li>
+                    </ul>
+                </div>
+                <div class="mode-card" id="learning-mode">
+                    <div class="mode-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+                    <h3>Senda del Conocimiento</h3>
+                    <h3>(Modo Aprendizaje)</h3>
+                    <p>Aprende paso a paso con nuestros guías ancestrales.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-lightbulb"></i> Iluminación en cada respuesta</li>
+                        <li><i class="fas fa-arrows-alt-h"></i> Teje tu propio camino</li>
+                        <li><i class="fas fa-check-circle"></i> Confirma tu sabiduría</li>
+                    </ul>
+                </div>
+                <div class="mode-card" id="practice-mode">
+                    <div class="mode-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <h3>Prueba de los Dioses</h3>
+                    <h3>(Modo Práctica)</h3>
+                    <p>Demuestra tu valentía sin ayuda de los espíritus.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-arrow-right"></i> Un solo camino</li>
+                        <li><i class="fas fa-eye-slash"></i> Sin susurros divinos</li>
+                        <li><i class="fas fa-medal"></i> Revela tu destino al final</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para seleccionar la duración de la práctica -->
+    <div id="practice-duration-modal" class="modal">
+        <div class="modal-content practice-modal-content">
+            <div class="modal-header">
+                <h3>Selecciona la duración de la práctica</h3>
+            </div>
+            <div class="modal-body">
+                <div class="duration-selector">
+                    <select id="practice-duration">
+                        <option value="5">5 minutos</option>
+                        <option value="10">10 minutos</option>
+                        <option value="15">15 minutos</option>
+                        <option value="20">20 minutos</option>
+                        <option value="25">25 minutos</option>
+                        <option value="30">30 minutos</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer" style="display: flex; justify-content: center; padding: 15px 20px;">
+                <button id="cancel-practice" class="cancel-button" style="margin-right: 12px;">Cancelar</button>
+                <button id="start-practice" class="start-button" style="margin-left: 12px;">Comenzar</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Importar el módulo de modos de estudio -->
+    <script type="module" src="js/modes.js"></script>
+    <script type="module" src="js/utils.js"></script>
+</body>
+</html>

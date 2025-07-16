@@ -1,0 +1,332 @@
+/* Estilos para la sección de temas */
+
+/* Estilo global */
+* 
+{
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+}
+
+/* Estilos para el encabezado principal */
+.app-header 
+{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #FFFCF9;
+    border-bottom: 2px solid #C14B36;
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: 70px;
+}
+
+/* Estilos para el logo */
+.app-logo 
+{
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: #C14B36;
+    background-color: #FFFCF9;
+    border-radius: 4px;
+}
+
+/* Estilo para la imagen del logo */
+.app-logo .logo-image 
+{
+    height: 36px;
+    width: auto;
+}
+
+/* Botón de perfil */
+.header-buttons 
+{
+    display: flex;
+    gap: 15px;
+}
+
+/* Contenido del botón de perfil */
+.profile-button 
+{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #FFFAF5;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #C14B36;
+    border: 1px solid #C14B36;
+    transition: background-color 0.3s ease;
+}
+
+/* Área de búsqueda de temas */
+.search-container 
+{
+    width: 100%;
+    background-image: url('../img/fondo_cursos.png');
+    background-size: cover;
+    background-position: center;
+    padding: 80px 0 80px;
+    margin-bottom: 30px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    position: relative;
+}
+
+/* Área de título de la sección y contador de temas */
+.topic-header 
+{
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+/* Título de la sección de temas */
+.topic-title 
+{
+    color: #C14B36;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 5px;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Área del contador de temas */
+.topic-counter 
+{
+    display: inline-block;
+    background-color: rgba(255, 250, 245, 0.7);
+    color: #C75A3B;
+    font-size: 14px;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold; /* Texto en negrita */
+    border: 1px solid rgba(199, 90, 59, 0.3);
+}
+
+/* Contador de temas */
+#topic-count 
+{
+    color: #C75A3B;
+    font-weight: bold;
+}
+
+/* Área de la barra de búsqueda de tema */
+.search-box-wrapper 
+{
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Barra de búsqueda de temas */
+.search-box 
+{
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 250, 245, 0.9);
+    border-radius: 30px;
+    padding: 12px 25px;
+    box-shadow: 0 6px 15px rgba(173, 85, 67, 0.15);
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 2;
+    border: 2px solid rgba(199, 90, 59, 0.15);
+}
+
+/* Input de la barra de búsqueda de temas */
+#topic-search 
+{
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    padding: 5px 0;
+    background: transparent;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Icono de la barra de búsqueda de temas */
+.search-icon 
+{
+    color: #C75A3B;
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+/* Área de selección de temas */
+#topics-selection 
+{
+    background-color: #FFFAF5;
+    width: 100%;
+    min-height: 100vh;
+    padding-top: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
+    overflow: visible;
+    position: relative;
+}
+
+/* Área de la lista de temas */
+#topic-list 
+{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    width: 100%;
+    margin: 20px auto 20px;
+    position: relative;
+}
+
+/* Tarjeta de tema */
+.topic-card 
+{
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(173, 85, 67, 0.1);
+    overflow: hidden;
+    flex: 1 1 calc(25% - 15px);
+    min-width: 220px;
+    max-width: calc(25% - 15px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    border: 1px solid #C14B36;
+}
+
+/* Área de la imagen de la tarjeta de temas */
+.topic-image 
+{
+    width: 100%;
+    padding-top: 64.81%;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Imagen de la tarjeta de tema */
+.topic-image img 
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+/* Efecto al colocar el ratón sobre un card de tema */
+.topic-card:hover .topic-image img 
+{
+    transform: scale(1.05);
+}
+
+/* Área de información del tema */
+.topic-info 
+{
+    background-color: #FFFAF5;
+    padding: 15px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Título del tema */
+.topic-info h3 
+{
+    margin: 0 0 5px 0;
+    color: #C14B36;
+    font-size: 1.1rem;
+}
+
+/* Área de detalles del tema */
+.topic-meta 
+{
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    color: #C14B36;
+    font-size: 0.85rem;
+    padding-top: 5px;
+    font-weight: 500;
+}
+
+/* Icono de cantidad de temas */
+.topic-meta i 
+{
+    margin-right: 5px;
+    color: #C14B36;
+}
+
+/* Mensaje de no resultados */
+.no-results 
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 40px 20px;
+    text-align: center;
+    background-color: #FFFAF5;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Estilos para el mensaje de estado vacío */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px 20px;
+    margin: 20px auto;
+    max-width: 600px;
+    grid-column: 1 / -1;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.empty-state i {
+    font-size: 48px;
+    color: #C14B36;
+    margin-bottom: 20px;
+}
+
+.empty-state h3 {
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.empty-state p {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 25px;
+}
+
+.empty-state .btn-primary {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #C14B36;
+    color: white;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.3s;
+}
+
+.empty-state .btn-primary:hover {
+    background-color: #a13e2d;
+}

@@ -1,0 +1,125 @@
+/* Estilos del sidebar */
+
+/* Estilo principal del sidebar */
+.sidebar 
+{
+    width: 240px;
+    background-color: rgba(255, 250, 245, 0.95);
+    display: flex;
+    flex-direction: column;
+    padding: 20px 0;
+    box-shadow: 0 0 10px rgba(173, 85, 67, 0.15);
+    border-right: 1px solid rgba(199, 90, 59, 0.1);
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
+}
+
+/* Estilo del logo */
+.logo 
+{
+    padding: 15px 15px 25px;
+    border-bottom: 1px solid rgba(199, 90, 59, 0.15);
+    text-align: center;
+}
+
+/* Estilo de la imagen del logo */
+.logo img 
+{
+    max-width: 210px; 
+    display: inline-block;
+    background-color: #FFFAF5;
+}
+
+/* Contenedor avatar del usuario */
+.user-avatar 
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid #C14B36;
+    border-top: 1px solid #C14B36;
+}
+
+/* Estilo del avatar del usuario */
+.avatar-circle 
+{
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+/* Estilo del relleno del avatar */
+.avatar-circle.fill 
+{
+    background-color: #C75A3B;
+    font-size: 24px;
+}
+
+/* Estilo del texto del avatar */
+.avatar-circle span 
+{
+    font-size: 22px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* Estilo del nombre del usuario */
+.username 
+{
+    margin: 5px 0;
+    font-size: 22px;
+    font-weight: bold;
+    color: #C75A3B;
+}
+
+/* Contenedor de la barra de navegación */
+.sidebar-nav 
+{
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Estilo de los items de la barra de navegación */
+.nav-item 
+{
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    color: #C75A3B;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    font-size: 18px;
+}
+
+/* Estilo de los iconos de los items de la barra de navegación */
+.nav-item i 
+{
+    margin-right: 15px;
+    width: 20px;
+    text-align: center;
+    font-size: 18px;
+}
+
+/* Estilo del texto de los items de la barra de navegación */
+.nav-item span 
+{
+    font-weight: 400;
+}
+
+/* Estilo de los items de la barra de navegación al pasar el mouse */
+.nav-item:hover:not(.active) 
+{
+    background-color: rgba(199, 90, 59, 0.05);
+    color: #C75A3B;
+}

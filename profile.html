@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil</title>
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/profile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Chart.js para los gráficos (cargado en el head para disponibilidad inmediata) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="with-sidebar">
+    <div class="main-container">
+        <!-- Contenedor para el sidebar que será cargado desde un archivo único -->
+        <div id="sidebar-container"></div>
+        
+        <!-- Contenido principal -->
+        <div class="main-content">
+            <div class="settings-header">
+                <h1>Panel de Control</h1>
+                <a href="index.html" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </a>
+            </div>
+            
+            <!-- Contenedor flexible para tarjetas superiores -->
+            <div class="top-cards-container">    
+                <!-- Mensaje de bienvenida -->
+                <div class="welcome-message">
+                    <div class="welcome-content">
+                        <div class="welcome-top">
+                            <h2 class="greeting">Hola <span class="user-greeting-name" id="user-greeting-name">Usuario</span>,</h2>
+                            <p class="notification-text">Tienes <span class="notification-count">1</span> nuevas notificaciones</p>
+                            <p class="welcome-subtext">- ¡Bienvenido a Hatun!</p>
+                        </div>
+                    </div>
+                    <div class="welcome-image">
+                        <img src="img/bienvenida.png" alt="Bienvenida" class="character-img">
+                    </div>
+                    <div class="view-all-link">
+                        <a href="#">Ver todas las notificaciones</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filtro de mes -->
+            <div class="month-filter-container">
+                <label for="month-filter">Mes:</label>
+                <div class="custom-select">
+                    <select id="month-filter" class="month-select">
+                    </select>
+                    <div class="select-arrow">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tarjetas de estadísticas en fila -->
+            <div class="stats-cards-container">
+                <!-- Tarjeta de temas aprobados -->
+                <div class="stat-card courses-completed-card">
+                    <div class="card-icon-container">
+                        <img src="img/icons/temas_aprobados.svg" alt="Temas" class="card-icon">
+                    </div>
+                    <div class="card-text">
+                        <p class="card-value" id="courses-completed">0</p>
+                        <h3 class="card-title">Temas aprobados</h3>
+                    </div>
+                </div>
+                
+                <!-- Contenedor para las tarjetas de minutos y exámenes -->
+                <div class="stats-cards-group">
+                    <!-- Tarjeta de minutos de práctica -->
+                    <div class="stat-card study-hours-card">
+                        <div class="card-icon-container">
+                            <img src="img/icons/minutos_practica.svg" alt="Minutos" class="card-icon">
+                        </div>
+                        <div class="card-text">
+                            <p class="card-value" id="study-minutes-total">0</p>
+                            <h3 class="card-title">Minutos de práctica</h3>
+                        </div>
+                    </div>
+                    
+                    <!-- Tarjeta de exámenes realizados -->
+                    <div class="stat-card exams-card">
+                        <div class="card-icon-container">
+                            <img src="img/icons/examenes_realizados.svg" alt="Exámenes" class="card-icon">
+                        </div>
+                        <div class="card-text">
+                            <p class="card-value" id="exams-taken">0</p>
+                            <h3 class="card-title">Exámenes realizados</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sección inferior con gráficos -->
+            <div class="bottom-sections">
+                <!-- Tarjeta de insignias -->
+                <div class="badges-card">
+                    <div class="stats-header">
+                        <h3 class="section-title">Mis medallas</h3>
+                    </div>
+                
+                    <!-- Navegación de insignias -->
+                    <div class="badge-navigation">
+                        
+                        <button class="badge-nav-btn prev-badge"><i class="fas fa-chevron-left"></i></button>
+                        
+                        <!-- Círculo de progreso con la imagen -->
+                        <div class="badge-circle">
+                            <img id="badge-image" src="" alt="Medalla" class="badge-image">
+                            
+                        </div>
+                        
+                        <button class="badge-nav-btn next-badge"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                    
+                    <!-- Textos debajo del círculo -->
+                    <div class="badge-labels">
+                        <div class="badge-label">
+                            <span class="label-text">Insignia:</span>
+                            <span id="badge-name" class="label-value">Cargando...</span>
+                        </div>
+                        <div class="badge-label">
+                            <span class="label-text">Exámenes Necesarios:</span>
+                            <span id="badge-required-exams" class="label-value">0</span>
+                        </div>
+                        <div class="badge-label">
+                            <span class="label-text">Porcentaje de Avance:</span>
+                            <span id="badge-progress" class="label-value">0%</span>
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Sección de estadísticas de aprendizaje por día -->
+                <div class="learning-stats-section">
+                    <div class="stats-header">
+                        <h3 class="section-title">Minutos de práctica por día</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="learning-stats-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Se eliminó la sección anterior de insignias ya que ahora está en la tarjeta superior -->
+        </div>
+    </div>
+
+    <!-- Scripts de la aplicación -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module" src="js/supabase.js"></script>
+    <script type="module" src="js/utils.js"></script>
+    <script type="module" src="js/profile.js"></script>
+</body>
+</html>

@@ -1,0 +1,307 @@
+/* Estilos para la vista de pruebas */
+
+/* Estilo global */
+* 
+{
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+}
+
+/* Encabezado de la página */
+.settings-header 
+{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+/* Titulo de las secciones */
+.settings-header h1 
+{
+    font-size: 24px;
+    color: #8C3C2C;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* Estilos para el botón de volver */
+.back-link 
+{
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: rgba(255, 250, 245, 0.9);
+    color: #C75A3B;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1px solid #C14B36;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(173, 85, 67, 0.1);
+}
+
+/* Efecto al colocar el ratón sobre el botón de volver */
+.back-link:hover 
+{
+    background-color: #C14B36;
+    color: white;
+}
+
+/* Sección de filtros */
+.tests-filter-section 
+{
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+/* Estilos para el filtro de mes */
+.month-filter-container 
+{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: rgba(255, 250, 245, 0.9);
+    border-radius: 8px;
+    padding: 12px 20px;
+    box-shadow: 0 2px 8px rgba(173, 85, 67, 0.15);
+    border-top: 3px solid #C14B36;
+}
+
+/* Resumen de pruebas */
+.tests-summary 
+{
+    display: flex;
+    gap: 15px;
+}
+
+/* Tarjeta de resumen */
+.summary-item 
+{
+    background-color: rgba(255, 250, 245, 0.9);
+    border-radius: 8px;
+    padding: 15px 20px;
+    box-shadow: 0 2px 8px rgba(173, 85, 67, 0.15);
+    text-align: center;
+    min-width: 120px;
+    border-top: 3px solid #C14B36;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Valor de la tarjeta */
+.summary-value 
+{
+    font-size: 24px;
+    font-weight: 700;
+    color: #C75A3B;
+    margin-bottom: 4px;
+    margin-top: 0;
+}
+
+/* Texto de la tarjeta */
+.summary-label 
+{
+    font-size: 14px;
+    color: #8C3C2C;
+    margin: 0;
+}
+
+/* Configuramos el contenedor de la tabla con los mismos márgenes */
+.tests-table-container 
+{
+    width: 100%;
+    padding: 0;
+    overflow-x: auto;
+    background-color: rgba(255, 250, 245, 0.9);
+    border-radius: 12px;
+    border-top: 4px solid #C14B36;
+    box-shadow: 0 2px 8px rgba(173, 85, 67, 0.15);
+    margin-bottom: 30px;
+}
+
+/* Tabla de pruebas */
+.tests-table 
+{
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 0;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    table-layout: auto;
+}
+
+/* Encabezados y celdas de la tabla */
+.tests-table th, .tests-table td 
+{
+    padding: 15px 20px;
+    text-align: left;
+    border-bottom: 1px solid #f0f0f0;
+    font-family: 'Roboto', sans-serif;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Encabezados de la tabla */
+.tests-table th 
+{
+    background-color: rgba(235, 220, 215, 0.2);
+    font-weight: 600;
+    color: #8C3C2C;
+    position: relative;
+    border-bottom: 1px solid #DB7A59;
+}
+
+/* Primer encabezado de la tabla */
+.tests-table th:first-child 
+{
+    border-top-left-radius: 12px;
+}
+
+/* Ultimo encabezado de la tabla */
+.tests-table th:last-child 
+{
+    border-top-right-radius: 12px;
+}
+
+/* Primer celda de la última fila de la tabla */
+.tests-table tbody tr:last-child td:first-child 
+{
+    border-bottom-left-radius: 12px;
+}
+
+/* Última celda de la última fila de la tabla */
+.tests-table tbody tr:last-child td:last-child 
+{
+    border-bottom-right-radius: 12px;
+}
+
+/* Fondo de la fila al pasar el ratón por encima */
+.tests-table tbody tr:hover 
+{
+    background-color: rgba(235, 220, 215, 0.2);
+}
+
+/* Texto de la fecha */
+.date-text 
+{
+    color: #C75A3B;
+    font-weight: 500;
+}
+
+/* Texto del curso y tema */
+.course-text, .topic-text 
+{
+    color: #C75A3B;
+    font-weight: 500;
+}
+
+/* Texto del tiempo */
+.time-text 
+{
+    color: #8C3C2C;
+}
+
+/* Texto de la duración */
+.duration-text 
+{
+    font-weight: 500;
+    color: #C75A3B;
+}
+
+/* Texto del tipo de completación */
+.completion-type 
+{
+    color: #8C3C2C;
+}
+
+/* Tarjeta de puntuación */
+.score-badge 
+{
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+    display: inline-block;
+    min-width: 60px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Tarjeta de puntuación excelente */
+.score-excellent 
+{
+    background-color: rgba(235, 220, 215, 0.6);
+    color: #8C3C2C;
+}
+
+/* Tarjeta de puntuación buena */
+.score-good 
+{
+    background-color: rgba(235, 220, 215, 0.5);
+    color: #C14B36;
+}
+
+/* Tarjeta de puntuación media */
+.score-average 
+{
+    background-color: rgba(235, 220, 215, 0.4);
+    color: #C75A3B;
+}
+
+/* Tarjeta de puntuación mala */
+.score-poor 
+{
+    background-color: rgba(235, 220, 215, 0.3);
+    color: #AA4939;
+}
+
+/* Texto de la puntuación */
+.score-detail 
+{
+    opacity: 0.8;
+}
+
+/* Icono de no pruebas */
+.no-tests-icon 
+{
+    font-size: 48px;
+    color: #C75A3B;
+    margin-bottom: 15px;
+}
+
+/* Mensaje de no pruebas */
+.no-tests-message 
+{
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 20px;
+    background-color: rgba(255, 250, 245, 0.9);
+    border-radius: 12px;
+    border-top: 4px solid #C14B36;
+    box-shadow: 0 2px 8px rgba(173, 85, 67, 0.15);
+    text-align: center;
+}
+
+/* Botón de iniciar prueba */
+.start-test-btn 
+{
+    background-color: #C14B36;
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    margin-top: 20px;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}

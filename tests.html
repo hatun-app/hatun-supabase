@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial de Pruebas</title>
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/profile.css">
+    <link rel="stylesheet" href="css/tests.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="with-sidebar">
+    <div class="main-container">
+        <!-- Contenedor para el sidebar que será cargado desde un archivo único -->
+        <div id="sidebar-container"></div>
+        
+        <!-- Contenido principal -->
+        <div class="main-content">
+            <div class="settings-header">
+                <h1>Historial de Pruebas</h1>
+                <a href="index.html" class="back-link">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </a>
+            </div>
+            
+            <!-- Filtros y estadísticas -->
+            <div class="tests-filter-section">
+                <!-- Filtro de mes -->
+                <div class="month-filter-container">
+                    <label for="month-filter">Filtrar por:</label>
+                    <div class="custom-select">
+                        <select id="month-filter" class="month-select">
+                        </select>
+                        <div class="select-arrow">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Resumen de pruebas del mes -->
+                <div class="tests-summary">
+                    <div class="summary-item">
+                        <div class="summary-value" id="total-tests">0</div>
+                        <div class="summary-label">Total de pruebas</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-value" id="avg-score">0%</div>
+                        <div class="summary-label">Puntuación media</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-value" id="avg-time">0 min</div>
+                        <div class="summary-label">Tiempo promedio</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contenedor de tarjetas de pruebas -->
+            <div class="tests-cards-container" id="tests-list">
+                <!-- Las tarjetas de pruebas se cargarán dinámicamente aquí -->
+                <div class="no-tests-message" id="no-tests-message">
+                    <i class="fas fa-clipboard-list no-tests-icon"></i>
+                    <p>No has realizado ninguna prueba en este período.</p>
+                    <a href="index.html" class="start-test-btn">Comenzar una prueba</a>
+                </div>
+            </div>
+            
+            
+            
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module" src="js/supabase.js"></script>
+    <script type="module" src="js/utils.js"></script>
+    <script src="js/tests.js" type="module"></script>
+</body>
+</html>

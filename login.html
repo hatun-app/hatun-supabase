@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hatun - Iniciar Sesión</title>
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
+</head>
+
+<body>
+    <!-- Overlay de carga -->
+    <div id="auth-loading-overlay">
+        <div class="auth-message">
+            <h2>Verificando...</h2>
+            <p>Por favor espera mientras verificamos tu sesión...</p>
+        </div>
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Contenedor principal -->
+    <main class="main-content">
+        <!-- Sección de login -->
+        <section class="auth-container" id="login-container">
+            <div class="container">
+                <div class="auth-content">
+                    <!-- Imagen de bienvenida -->
+                    <div class="auth-image">
+                        <img src="img/login.png" alt="Hatun Login" class="img-fluid">
+                    </div>
+                    
+                    <!-- Sección de formulario -->
+                    <div class="auth-form">
+                        <!-- Logo de la aplicación -->
+                        <div class="app-logo">
+                            <img src="img/logo.svg" alt="Hatun Logo" class="img-fluid">
+                        </div>
+                        
+                        <!-- Mensaje de bienvenida -->
+                        <div class="welcome">
+                            <p>Inicia sesión para acceder a todos los recursos educativos</p>
+                        </div>
+                    
+                        <!-- Sección de características -->
+                        <div class="features-container">
+                            <!-- Característica 1 -->
+                            <div class="feature-card">
+                                <div class="feature-icon">
+                                    <i class="fas fa-book-reader"></i>
+                                </div>
+                                <div class=".auth-form .feature-card p">
+                                    <p>Amplia selección de cursos</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Característica 2 -->
+                            <div class="feature-card">
+                                <div class="feature-icon">
+                                    <i class="fas fa-graduation-cap"></i>
+                                </div>
+                                <div class=".auth-form .feature-card p">
+                                    <p>Cientos de ejercicios organizados por temas</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Característica 3 -->
+                            <div class="feature-card">
+                                <div class="feature-icon">
+                                    <i class="fas fa-book-open"></i>
+                                </div>
+                                <div class=".auth-form .feature-card p">
+                                    <p>Conceptos teóricos detallados</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Característica 4 -->
+                            <div class="feature-card">
+                                <div class="feature-icon">
+                                    <i class="fas fa-mobile-alt"></i>
+                                </div>
+                                <div class=".auth-form .feature-card p">
+                                    <p>Modo aprendizaje con explicaciones completas</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Característica 5 -->
+                            <div class="feature-card">
+                                <div class="feature-icon">
+                                    <i class="fas fa-stopwatch"></i>
+                                </div>
+                                <div class=".auth-form .feature-card p">
+                                    <p>Modo práctica con temporizador</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Botón de login -->
+                        <div class="auth-actions">
+                            <button id="google-login-btn" class="google-btn">
+                                <i class="fab fa-google"></i> Continuar con Google
+                            </button>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Script de autenticación -->
+    <script src="js/login.js" type="module"></script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+/* Estilos para la sección de selección de modos */
+
+/* Estilo global */
+* 
+{
+    font-family: 'Roboto', sans-serif;
+    background-color: #FFFAF5;
+}
+
+/* Estilos para el encabezado principal */
+.app-header 
+{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #FFFCF9;
+    border-bottom: 2px solid #C14B36;
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: 70px;
+}
+
+/* Estilos para el logo */
+.app-logo 
+{
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: #c13636;
+    background-color: #FFFCF9;
+    border-radius: 4px;
+}
+
+/* Estilo para la imagen del logo */
+.app-logo .logo-image 
+{
+    height: 36px;
+    width: auto;
+}
+
+/* Contenedor del mensaje de error */
+.error-container 
+{
+    max-width: 70%;
+    margin: 40px auto;
+    text-align: center;
+    padding: 40px;
+    background-color: #FFFAF5;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Icono del mensaje de error */
+.error-icon 
+{
+    font-size: 80px;
+    color: #DB9069;
+    margin-bottom: 15px;
+}
+
+/* Título del mensaje de error */
+.error-title 
+{
+    font-size: 24px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+/* Mensaje del error */
+.error-message 
+{
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+/* Botón para volver al inicio */
+.error-button 
+{
+    background-color: #DB9069;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.2s;
+}
+
+/* Efecto al colocar el mouse sobre el botón de volver al inicio */
+.error-button:hover 
+{
+    background-color: #c27a55;
+}

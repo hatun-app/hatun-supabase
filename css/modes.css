@@ -1,0 +1,265 @@
+/* Estilos para la sección de selección de modos */
+
+/* Estilo global */
+* 
+{
+    font-family: 'Roboto', sans-serif;
+    background-color: #FFFAF5;
+}
+
+/* Estilos para el encabezado principal */
+.app-header 
+{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #FFFCF9;
+    border-bottom: 2px solid #C14B36;
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: 70px;
+}
+
+/* Estilos para el logo */
+.app-logo 
+{
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+    font-weight: 700;
+    color: #c13636;
+    background-color: #FFFCF9;
+    border-radius: 4px;
+}
+
+/* Estilo para la imagen del logo */
+.app-logo .logo-image 
+{
+    height: 36px;
+    width: auto;
+}
+
+/* Botón de perfil */
+.header-buttons 
+{
+    display: flex;
+    gap: 15px;
+}
+
+/* Contenido del botón de perfil */
+.profile-button 
+{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #FFFAF5;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: #C14B36;
+    border: 1px solid #C14B36;
+    transition: background-color 0.3s ease;
+}
+
+/* Área del selector de modos */
+.mode-container 
+{
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 0px 20px 60px; 
+    max-width: 70%; 
+    margin: 30px auto 0;
+    flex-direction: row; 
+    flex-wrap: nowrap; 
+    width: 100%;
+    align-items: stretch; 
+}
+
+/* Tarjeta de modo */
+.mode-card 
+{
+    background-color: rgba(255, 250, 245, 0.9); /* Fondo ligeramente cálido */
+    border-radius: 12px;
+    border-top: 4px solid #C14B36; 
+    box-shadow: 0 8px 16px rgba(173, 85, 67, 0.15);
+    padding: 30px;
+    flex: 1; 
+    width: calc(33.333% - 14px); 
+    max-width: calc(33.333% - 14px); 
+    min-width: 0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; 
+    margin: 0; 
+}
+
+/* Efecto al colocar el ratón sobre un card de modo */
+.mode-card:hover 
+{
+    transform: translateY(-10px);
+    box-shadow: 0 12px 20px rgba(173, 85, 67, 0.25);
+    border-top: 4px solid #AA4939; 
+}
+
+/* Icono de la tarjeta de modo */
+.mode-icon 
+{
+    font-size: 48px;
+    margin-bottom: 20px;
+    color: #C75A3B; 
+}
+
+/* Título de la tarjeta de modo */
+.mode-card h3 
+{
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #C75A3B
+}
+
+/* Descripción de la tarjeta de modo */
+.mode-card p 
+{
+    color: #666;
+    line-height: 1.5;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+/* Lista de características */
+.feature-list 
+{
+    list-style-type: none;
+    padding: 0;
+    text-align: left;
+    width: 100%;
+    font-size: 14px;
+}
+
+/* Icono de la lista de características */
+.feature-list li i 
+{
+    color: #C75A3B;
+    margin-right: 10px;
+    font-size: 16px;
+    width: 20px;
+    text-align: center;
+}
+
+/* Elementos de la lista de características */
+.feature-list li 
+{
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    
+}
+
+/* Estilos para el modal de selección de duración*/
+.modal 
+{
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Contenido del modal de selección de duración */
+.modal-content 
+{
+    background-color: #FFFAF5;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    max-width: 90%;
+    width: 400px;
+    text-align: center;
+}
+
+/* Selector de duración */
+.duration-selector 
+{
+    width: 100%;
+    margin: 20px 0;
+    text-align: center;
+    background-color: rgba(255, 250, 245, 0.9);
+}
+
+/* Lista desplegable del selector de duración */
+.duration-selector select 
+{
+    width: 80%;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+    color: #333;
+    background-color: rgba(255, 250, 245, 0.9);
+    outline: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    appearance: none; 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23C75A3B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 30px;
+}
+
+/* Efecto al colocar el ratón sobre el selector de duración */
+.duration-selector select:hover, 
+.duration-selector select:focus 
+{
+    border-color: #DB9069;
+    box-shadow: 0 0 0 2px rgba(219, 144, 105, 0.2);
+}
+
+/* Botón de cancelar la práctica */
+.cancel-button 
+{
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    border-color: #DB9069;
+    border-width: 1px;
+    transition: background-color 0.2s ease;
+}
+
+/* Botón de inicio de la práctica */
+.start-button 
+{
+    background-color: #DB9069; 
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    min-width: 120px;
+    transition: all 0.2s;
+}
+
+/* Efecto al colocar el ratón sobre el botón de comenzar */
+.start-button:hover 
+{
+    background-color: #C75A3B; 
+}

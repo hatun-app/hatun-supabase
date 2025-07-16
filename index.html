@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hatun - Cursos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/courses.css">
+    <link rel="stylesheet" href="css/common.css">
+</head>
+
+<body>
+    <!-- Overlay de carga -->
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <p>Cargando...</p>
+    </div>
+    
+    <!-- Header de la aplicación -->
+    <header class="app-header">
+        <div class="app-logo">
+            <img src="img/logo.svg" alt="App Educativa Logo" class="logo-image">
+        </div>
+        <div class="header-buttons">
+            <button id="profile-button" class="profile-button">
+                <i class="fas fa-user"></i>
+            </button>
+        </div>
+    </header>
+    
+    <!-- Contenedor principal de la aplicación -->
+    <div id="app">
+        <!-- Pantalla de selección de curso -->
+        <div id="course-selection" class="screen">
+            <div class="search-container">
+                <div class="course-header">
+                    <h1 class="course-title">Cursos</h1>
+                    <div class="course-counter"><span id="course-count"></span> cursos</div>
+                </div>
+                <div class="search-box-wrapper">
+                    <div class="search-box">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="course-search" placeholder="Buscar cursos..." autocomplete="off">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contenedor principal para la lista de cursos -->
+            <div class="course-list" id="course-list">
+                <!-- Los cursos se cargarán dinámicamente aquí -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts de la aplicación -->
+    <script type="module" src="js/courses.js"></script>
+    <script type="module">
+        // Importamos los módulos necesarios
+        import { initApp } from './js/utils.js';
+        
+        // Esperar a que el DOM esté completamente cargado
+        if (document.readyState === 'loading') 
+        {
+            // Si el DOM no está listo, esperar a que se cargue
+            document.addEventListener('DOMContentLoaded', initApp);
+        } 
+        else 
+        {
+            // Si el DOM ya está listo, inicializar inmediatamente
+            setTimeout(initApp, 0);
+        }
+    </script>
+</body>
+</html>

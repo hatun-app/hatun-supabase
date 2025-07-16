@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - Hatun</title>
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="css/error.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <header class="app-header">
+            <div class="app-logo">
+                <img src="img/logo.svg" alt="Logo Hatun" class="logo-image">
+            </div>
+        </header>
+            
+        <div class="error-container">
+            <div class="error-icon">
+                <img src="img/error_cuy.png" alt="Error">
+            </div>
+            <h1 class="error-title">¡Ups! Ha ocurrido un error</h1>
+            <p class="error-message" id="error-message"></p>
+            <button class="error-button" onclick="window.location.href='index.html'">Volver al inicio</button>
+        </div>
+    </div>
+    
+    <script>
+        // Obtenemos el mensaje de error desde localStorage
+        const msg = localStorage.getItem('ErrorMessage');
+        
+        // Obtenemos el contenedor del mensaje de error
+        const container = document.getElementById('error-message');
+        
+        // Asignamos el mensaje al contenedor
+        container.textContent = msg;
+    </script>
+</body>
+</html>

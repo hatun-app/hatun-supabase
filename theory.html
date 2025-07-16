@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hatun - Modo Teoría</title>
+    <link rel="stylesheet" href="css/theory.css">
+    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Google AdSense Script -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <p>Cargando...</p>
+    </div>
+    
+    <div id="app">
+        <!-- Redirigir a login.html si no hay usuario autenticado -->
+        <script>
+            if (!localStorage.getItem('user')) 
+            {
+                window.location.href = 'login.html';
+            }
+        </script>
+        
+        <!-- Pantalla de teoría -->
+        <div id="theory-screen" class="screen active">
+            <header class="app-header">
+                <div class="header-left">
+                    <div class="app-logo"><img src="img/logo.svg" alt="Logo" class="logo-image"></div>
+                </div>
+                <div class="header-center">
+                    <div class="topic-header" id="theory-topic-title">Título del Tema</div>
+                    <div class="progress-container">
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" style="width: 0%;"></div>
+                        </div>
+                        <div class="progress-text">0% Completado</div>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="page-button" title="Página del Curso" onclick="window.location.href='topics.html'">
+                        Página del Curso
+                    </button>
+                </div>
+            </header>
+            
+            <!-- Contenedor principal con dos columnas -->
+            <div class="content-container">
+                <!-- Columna izquierda para selector de secciones de teoría -->
+                <div class="theory-sidebar">
+                    <div class="sidebar-content">
+                        <div class="topics-list" id="theory-list">
+                            <!-- Las secciones de teoría se cargarán dinámicamente aquí -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Columna derecha para el contenido de la teoría -->
+                <div class="theory-section">
+                    <!-- Banner de anuncios de Google que rota cada minuto -->
+                    <div id="ad-container" class="ad-banner-container">
+                        <!-- Los anuncios rotativos se cargarán dinámicamente aquí -->
+                    </div>
+                    
+                    <div class="theory-container">
+                        <div class="theory-subcontainer">
+                            <div class="theory-content" id="theory-content">
+                                <!-- El contenido teórico se cargará dinámicamente aquí -->
+                            </div>
+                            
+                            <div class="button-row">
+                                <button id="prev-button" class="button prev-button">
+                                    <i class="fas fa-arrow-left"></i> Anterior
+                                </button>
+                                <button id="next-button" class="button next-button">
+                                    Siguiente <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script type="module" src="js/theory.js"></script>
+</body>
+</html>
