@@ -38,6 +38,18 @@ async function initTestsPage()
         // Realizamos una consulta a Supabase para obtener todos los exámenes del usuario
         const { data } = await supabase.from('user_tests').select('*, course:courses!course_id(id,title), topic:topics!topic_id(id,title)').eq('user_id', currentUser.id).order('end_time', { ascending: false });
         
+        // Verificamos si el usuario tiene exámenes realizados
+        if (!data || data.length === 0) {
+            // Generamos el mensaje de error
+            localStorage.setItem('ErrorMessage', 'Aún no tienes ningún avance. Empieza a practicar y vuelve luego :).');
+                    
+            // Redirigimos a la página de error
+            window.location.href = 'error.html';
+            
+            // Detenemos la ejecución de la función
+            return;
+        }
+        
         // Asignamos el resultado (array de pruebasa) a la variable global
         allTests = data || [];
 

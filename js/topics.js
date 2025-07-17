@@ -45,6 +45,34 @@ async function initTopicsPage()
     // Bloque try-catch para manejar posibles errores al inicializar la página de temas
     try
     {
+        // Configuramos el botón de perfil
+        const profileButton = document.getElementById('profile-button');
+        
+        // Añadimos el evento click al botón de perfil
+        if (profileButton) 
+        {
+            // Al hacer click en el botón de perfil, navegamos a la página de perfil
+            profileButton.addEventListener('click', () => 
+            {
+                // Redireccionamos a la página de perfil
+                window.location.href = 'profile.html';
+            });
+        }
+        
+        // Configuramos el botón de cierre de sesión
+        const logoutButton = document.getElementById('logout-button');
+        
+        // Añadimos el evento click al botón de cierre de sesión
+        if (logoutButton) 
+        {
+            // Al hacer click en el botón de cierre de sesión, ejecutamos la función signOut
+            logoutButton.addEventListener('click', async () => 
+            {
+                // Llamamos a la función de cierre de sesión
+                await signOut();
+            });
+        }
+
         // Obtenemos referencia al elemento del overlay de carga
         const loadingOverlay = document.getElementById('loading-overlay');
 

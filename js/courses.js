@@ -1,7 +1,7 @@
 // Módulo para la página de cursos
 
 // Importamos las dependencias necesarias
-import { getCourses } from './supabase.js';
+import { getCourses, signOut } from './supabase.js';
 
 // Estado local para los cursos
 const coursesState = 
@@ -47,6 +47,34 @@ async function initCoursesPage()
         
         // Limpiamos cualquier error previo
         coursesState.error = null;
+        
+        // 
+        const profileButton = document.getElementById('profile-button');
+        
+        //
+        if (profileButton) 
+        {
+            //
+            profileButton.addEventListener('click', () => 
+            {
+                //
+                window.location.href = 'profile.html';
+            });
+        }
+        
+        // 
+        const logoutButton = document.getElementById('logout-button');
+        
+        //
+        if (logoutButton) 
+        {
+            //
+            logoutButton.addEventListener('click', async () => 
+            {
+                //
+                await signOut();
+            });
+        }
         
         // Obtenemos referencia al elemento del overlay de carga
         const loadingOverlay = document.getElementById('loading-overlay');

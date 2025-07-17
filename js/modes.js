@@ -1,5 +1,8 @@
 // Módulo para manejar la página de selección de modos de estudio
 
+// Importamos las dependencias necesarias
+import { signOut } from './supabase.js';
+
 // Estado global de los modos
 const modesState = 
 {
@@ -38,6 +41,20 @@ async function initModesPage()
     {
         // Limpiamos cualquier error previo
         modesState.error = null;
+
+        // Configuramos el botón de cierre de sesión
+        const logoutButton = document.getElementById('logout-button');
+        
+        // Añadimos el evento click al botón de cierre de sesión
+        if (logoutButton) 
+        {
+            // Al hacer click en el botón de cierre de sesión, ejecutamos la función signOut
+            logoutButton.addEventListener('click', async () => 
+            {
+                // Llamamos a la función de cierre de sesión
+                await signOut();
+            });
+        }
         
         // Obtenemos el overlay de carga
         const loadingOverlay = document.getElementById('loading-overlay');

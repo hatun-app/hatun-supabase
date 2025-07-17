@@ -99,6 +99,18 @@ async function loadUserProfile()
         // Almacenamos el progreso del usuario
         profileState.userProgress = userProgress;
         
+        // Verificamos si el usuario tiene exámenes realizados
+        if (!userProgress || !userProgress.tests || userProgress.tests.length === 0) {
+            // Generamos el mensaje de error
+            localStorage.setItem('ErrorMessage', 'Aún no tienes ningún avance. Empieza a practicar y vuelve luego :).');
+                    
+            // Redirigimos a la página de error
+            window.location.href = 'error.html';
+            
+            // Detenemos la ejecución de la función
+            return; 
+        }
+        
         // Definimos la variable para almacenar el número de exámenes aprobados por el usuario
         let approvedExams = 0;
         
@@ -238,6 +250,7 @@ async function initMonthFilter()
         } else 
         {
             // Mostramos un mensaje de no datos
+            
         }
         
         // Seleccionamos el primer mes si ninguno está seleccionado
