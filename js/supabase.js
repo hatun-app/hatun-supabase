@@ -17,7 +17,7 @@ async function signInWithGoogle()
     try 
     {
         // Definimos la URL a la que será redirigido el usuario después de autenticarse
-        const redirectUrl = 'http://localhost:8080/login.html';
+        const redirectUrl = 'https://pages.hatun.app/login.html';
         
         // Verificamos la sesión actual antes de iniciar OAuth para evitar inicios de sesión duplicados
         const { data: sessionData } = await supabase.auth.getSession();
