@@ -177,10 +177,10 @@ async function setupMonthFilter()
         
         // Actualizamos el título del mes inicialmente
         const [month, year] = currentMonth.split('-').map(Number);
-        
+            
         // Obtenemos el elemento del título del mes
         const monthTitle = document.getElementById('current-month');
-        
+            
         // Actualizamos el contenido del título del mes
         monthTitle.textContent = `${monthNames[month - 1]} ${year}`;
     }
