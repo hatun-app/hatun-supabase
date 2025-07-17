@@ -117,16 +117,17 @@ export function setupSidebarNavigation()
     navLinks.forEach(function(link) 
     {
         //
-        if (link.getAttribute('href') === 'tests.html' || link.id === 'nav-tests') 
+        var url = link.getAttribute('href');
+        
+        // Para tests.html y profile.html permitimos navegación completa de página
+        if (url === 'tests.html' || url === 'profile.html' || link.id === 'nav-tests') 
         {
-            //
-            link.addEventListener('click', function(e) 
+            // No prevenimos el comportamiento por defecto, dejamos que se recargue la página
+            link.addEventListener('click', function() 
             {
-                //
-                navigationState.currentPage = 'tests.html';
+                // Solo actualizamos el estado de navegación
+                navigationState.currentPage = url;
             });
-
-            //
             return;
         }
         
@@ -150,6 +151,7 @@ export function setupSidebarNavigation()
         });
     });
 }
+
 
 //
 export async function loadContent(url) 
@@ -343,142 +345,241 @@ export function executeInlineScript(content, isModule)
                         console.warn('Error al importar script dinámico:', error.message);
                         reject(error);
                     });
-            } else {
-                // Usar Function en lugar de eval para mejor encapsulación
+            } else 
+            {
+                // 
                 const scriptFunction = new Function(content);
+                
+                // 
                 scriptFunction();
+                
+                // 
                 resolve();
             }
-        } catch (error) {
+        } catch (error) 
+        {
+            // 
             console.warn('Error al ejecutar script dinámico:', error.message);
+            
+            // 
             reject(error);
         }
     });
 }
 
 // Reemplaza la función loadScripts recursiva con una versión async/await más limpia
-async function loadScriptsSequentially(scripts) {
-    for (const script of scripts) {
-        try {
-            if (script.src) {
+async function loadScriptsSequentially(scripts) 
+{
+    // 
+    for (const script of scripts) 
+    {
+        // 
+        try 
+        {
+            // 
+            if (script.src) 
+            {
+                // 
                 await loadScript(script.src, script.isModule);
-            } else if (script.content) {
+            } else if (script.content) 
+            {
+                // 
                 await executeInlineScript(script.content, script.isModule);
             }
-        } catch (error) {
+        } catch (error) 
+        {
+            // 
             console.warn('Error al cargar script:', error);
-            // Continuamos con el siguiente script incluso si hay error
         }
     }
 }
 
 // Actualiza los elementos de avatar y nombre de usuario en el sidebar
-export function updateUserAvatarInSidebar() {
-    try {
+export function updateUserAvatarInSidebar() 
+{
+    // 
+    try 
+    {
+        // 
         let user = null;
+        
+        // 
         const userStr = localStorage.getItem('user');
-        if (userStr) {
+        
+        // 
+        if (userStr) 
+        {
+            // 
             user = JSON.parse(userStr);
-        } else {
+        } else 
+        {
+            // 
             const sessionUserStr = sessionStorage.getItem('user');
+            
+            // 
             if (sessionUserStr) user = JSON.parse(sessionUserStr);
         }
         
-        if (user) {
+        // 
+        if (user) 
+        {
+            //
             let displayName = user.name || user.username || 'Usuario';
-            if (user.user_metadata && user.user_metadata.full_name) {
+            
+            //
+            if (user.user_metadata && user.user_metadata.full_name) 
+            {
+                //
                 displayName = user.user_metadata.full_name;
             }
             
             // Crear iniciales a partir del nombre (máximo 2 caracteres)
-            let initials = displayName
-                .split(' ')
-                .filter(word => word.length > 0)
-                .map(word => word[0])
-                .join('')
-                .substr(0, 2)
-                .toUpperCase();
+            let initials = displayName.split(' ').filter(word => word.length > 0).map(word => word[0]).join('').substr(0, 2).toUpperCase();
                 
+            //
             if (!initials) initials = 'U';
             
+            //
             const avatarInitialsElement = document.querySelector('.avatar-circle span');
+            
+            //
             const usernameElement = document.querySelector('.username');
             
+            //
             if (avatarInitialsElement) avatarInitialsElement.textContent = initials;
+            
+            //
             if (usernameElement) usernameElement.textContent = displayName;
         }
-    } catch (error) {
+    } catch (error) 
+    {
+        //
         console.warn('Error al actualizar avatar de usuario:', error.message);
     }
 }
 
 // Actualiza el elemento activo en el menú de navegación según la página actual
-export function updateActiveMenuItem() {
-    try {
-        // Determinar la página actual
-        const currentPage = navigationState.currentPage || 
-                         window.location.pathname.split('/').pop() || 
-                         'index.html';
+export function updateActiveMenuItem() 
+{
+    //
+    try 
+    {
+        // 
+        const currentPage = navigationState.currentPage || window.location.pathname.split('/').pop() || 'index.html';
                          
-        // Primero eliminar la clase 'active' de todos los elementos
+        // 
         const allItems = document.querySelectorAll('.sidebar-nav .nav-item');
+        
+        //
         allItems.forEach(item => item.classList.remove('active'));
         
         // Definir la correspondencia de páginas a IDs de menú
-        const pageToMenuId = {
+        const pageToMenuId = 
+        {
             'index.html': 'nav-home',
-            'profile.html': 'nav-dashboard',  // Según el sidebar actual, profile.html usa nav-dashboard
+            'profile.html': 'nav-dashboard', 
             'tests.html': 'nav-tests'
         };
         
-        // Buscar el ID del elemento de menú correspondiente a la página actual
+        // 
         const menuId = pageToMenuId[currentPage];
-        if (menuId) {
+        
+        //
+        if (menuId) 
+        {
+            //
             const menuItem = document.getElementById(menuId);
-            if (menuItem) {
+            
+            //
+            if (menuItem) 
+            {
+                //
                 menuItem.classList.add('active');
             }
         }
-    } catch (error) {
+    } catch (error) 
+    {
+        //
         console.warn('Error al actualizar elemento activo del menú:', error.message);
     }
 }
 
-
-export function setupLogoutButton() {
+//
+export function setupLogoutButton() 
+{
+    //
     var logoutButton = document.getElementById('logout-button');
-    if (logoutButton) {
-        logoutButton.addEventListener('click', async function(e) {
+    
+    //
+    if (logoutButton) 
+    {
+        //
+        logoutButton.addEventListener('click', async function(e) 
+        {
+            //
             e.preventDefault();
-            try {
+            
+            //
+            try 
+            {
+                //
                 const { signOut } = await import('./supabase.js');
+                
+                //
                 const result = await signOut();
-                if (result && result.error) {
+                
+                //
+                if (result && result.error) 
+                {
+                    //
                     alert('Error al cerrar sesión: ' + result.error);
+                    
+                    //
                     return;
                 }
+
+                //
                 localStorage.removeItem('user');
+                
+                //
                 window.location.href = 'index.html';
-            } catch {
+            } catch 
+            {
+                //
                 alert('Error inesperado al cerrar sesión');
             }
         });
     }
 }
 
+//
 window.loadContent = loadContent;
 
+//
 async function init() 
 {
     //
     try 
     {
+        //
         appState.securityInitialized = true;
+        
+        //
         setupNavigationEvents();
+        
+        //
         const isAuthenticated = await checkAuth();
-        if (isAuthenticated) {
-            if (window.location.pathname.endsWith('index.html') || window.location.pathname.endsWith('/')) {
+        
+        //
+        if (isAuthenticated) 
+        {
+            //
+            if (window.location.pathname.endsWith('index.html') || window.location.pathname.endsWith('/')) 
+            {
+                //
                 await showScreen('course-selection');
+                
+                //
                 if (typeof initCoursesPage === 'function') await initCoursesPage();
             }
         }
@@ -500,66 +601,140 @@ export async function showScreen(screenId)
 {
     return new Promise((resolve) => 
     {    
+        //
         const sanitizedScreenId = screenId.replace(/[^a-zA-Z0-9_-]/g, '');
+        
+        //
         const screens = document.querySelectorAll('.screen');
+        
+        //
         let found = false;
-        screens.forEach(screen => {
-            if (screen.id === sanitizedScreenId) {
+        
+        //
+        screens.forEach(screen => 
+        {
+            //
+            if (screen.id === sanitizedScreenId) 
+            {
+                //
                 screen.style.display = 'block';
+                
+                //
                 found = true;
-                setTimeout(() => {
+                
+                //
+                setTimeout(() => 
+                {
+                    //
                     const event = new CustomEvent('screenShown', { detail: { screenId: sanitizedScreenId } });
+                    
+                    //
                     document.dispatchEvent(event);
+                    
+                    //
                     resolve(true);
                 }, 100);
-            } else {
+            } else 
+            {
+                //
                 screen.style.display = 'none';
             }
         });
-        if (found) {
+
+        //
+        if (found) 
+        {
+            //
             appState.currentScreen = sanitizedScreenId;
-        } else {
+        } else 
+        {
+            //
             resolve(false);
         }
     });
 }
 
-export function setupNavigationEvents() {
+// 
+export function setupNavigationEvents() 
+{
+    // 
     const backToCoursesBtn = document.getElementById('back-to-courses');
-    if (backToCoursesBtn) {
-        backToCoursesBtn.addEventListener('click', (e) => {
+    
+    // 
+    if (backToCoursesBtn) 
+    {
+        // 
+        backToCoursesBtn.addEventListener('click', (e) => 
+        {
+            // 
             e.preventDefault();
+            
+            // 
             showScreen('course-selection');
         });
     }
+    
+    // 
     const profileButton = document.getElementById('profile-button');
-    if (profileButton) {
-        profileButton.addEventListener('click', function() {
+    
+    // 
+    if (profileButton) 
+    {
+        // 
+        profileButton.addEventListener('click', function() 
+        {
+            // 
             window.location.href = 'profile.html';
         });
     }
+
+    // 
     const backFromProfileBtn = document.getElementById('back-from-profile');
-    if (backFromProfileBtn) {
+    
+    // 
+    if (backFromProfileBtn) 
+    {
+        // 
         backFromProfileBtn.addEventListener('click', () => showScreen('course-selection'));
     }
+
+    // 
     const logoutButton = document.getElementById('logout-button');
-    if (logoutButton) {
-        logoutButton.addEventListener('click', async () => {
-            try {
-                const { signOut } = await import('./supabase.js');
-                await signOut();
-            } catch {}
-            finally {
-                localStorage.removeItem('user');
-                sessionStorage.removeItem('user');
-                document.cookie.split(';').forEach(cookie => {
-                    const [name] = cookie.trim().split('=');
-                    if (name && name.includes('sb-') || name.includes('auth')) {
-                        document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-                    }
-                });
-                window.location.href = 'login.html';
-            }
+    
+    // 
+    if (logoutButton) 
+    {
+        //
+        logoutButton.addEventListener('click', async () => 
+        {
+            //
+            const { signOut } = await import('./supabase.js');
+                
+            //
+            await signOut();
+
+            //
+            localStorage.removeItem('user');
+            
+            //
+            sessionStorage.removeItem('user');
+            
+            //
+            document.cookie.split(';').forEach(cookie => 
+            {
+                //
+                const [name] = cookie.trim().split('=');
+                
+                //
+                if (name && name.includes('sb-') || name.includes('auth')) 
+                {
+                    //
+                    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+                }
+            });
+
+            //
+            window.location.href = 'login.html';
         });
     }
 }
@@ -571,17 +746,10 @@ export async function checkAuth()
     let user = null;
     
     //
-    try 
-    {
-        //
-        const userStr = localStorage.getItem('user');
+    const userStr = localStorage.getItem('user');
         
-        //
-        if (userStr) user = JSON.parse(userStr);
-    } catch (e) 
-    {
-        //
-    }
+    //
+    if (userStr) user = JSON.parse(userStr);
     
     //
     const currentPath = window.location.pathname;

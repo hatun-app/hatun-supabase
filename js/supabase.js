@@ -119,19 +119,15 @@ async function getTopics(courseId)
     try 
     {
         // Realizamos una consulta a la tabla 'topics' para obtener todos los temas del curso, ordenados por su índice
-        const { data: topics, error } = await supabase .from('topics') .select('*').eq('course_id', courseId).order('order_index', { ascending: true });
+        const { data: topics, error } = await supabase.from('topics').select('*').eq('course_id', courseId).order('order_index', { ascending: true });
         
-        // Para cada tema encontrado, obtenemos el número de ejercicios asociados mediante un mapeo
-        const topicsWithExerciseCounts = await Promise.all(topics.map(async (topic) => 
-        {
-            // Consultamos la tabla 'exercises' para contar cuántos ejercicios están asociados a este tema
-            const { count, error: countError } = await supabase.from('exercises').select('*', { count: 'exact', head: true }).eq('topic_id', topic.id);
-            
-            // Si no hubo error, devolvemos el tema con su conteo de ejercicios correspondiente
-            return { ...topic, exercise_count: count || 0 };
-        }));
+        //
+        if (error) throw error;
         
-        // Devolvemos el array con todos los temas enriquecidos con su conteo de ejercicios
+        // Mapeamos los temas para usar el campo 'exercises' existente como 'exercise_count'
+        const topicsWithExerciseCounts = topics.map(topic => ({...topic, exercise_count: topic.exercises || 0}));
+        
+        // Devolvemos el array con todos los temas
         return topicsWithExerciseCounts;
     } 
     catch (error) 
@@ -262,7 +258,7 @@ async function getUserProgress(userId)
     try 
     {
         // Consultamos la tabla 'user_tests' para obtener todos los exámenes realizados por el usuario, ordenados por fecha de inicio ascendente
-        const { data: testsData, error } = await supabase.from('user_tests').select('*').eq('user_id', userId).order('start_time', { ascending: true });
+        const { data: testsData } = await supabase.from('user_tests').select('*').eq('user_id', userId).order('start_time', { ascending: true });
         
         // Inicializamos el objeto donde se guardarán los minutos de práctica agrupados por mes/año
         const practiceByMonth = {};

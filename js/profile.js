@@ -2,6 +2,7 @@
  
 // Importamos las dependencias necesarias
 import { getUserProgress, signOut, getBadges } from './supabase.js';
+import { loadSidebar } from './utils.js';
 
 // Estado global del perfil
 const profileState = 
@@ -32,277 +33,26 @@ const badgesState =
     userApprovedExams: 0
 };
 
-// Función que carga el perfil del usuario desde almacenamiento local o sesión
-async function loadUserProfile() 
+// Inicializar la página cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', () => 
 {
-    //
-    try 
-    {
-        // Obtener datos del usuario directamente de localStorage
-        let userData = null;
-        
-        //
-        const userStr = localStorage.getItem('user');
-            
-        //
-        if (userStr) userData = JSON.parse(userStr);
-        
-        // Guardar los datos del usuario en el estado global
-        profileState.userProfile = userData;
-        
-        // Cargar todas las medallas disponibles
-        const badgesResult = await getBadges();
-        
-        // Calcular el número de temas aprobados por el usuario a partir de los exámenes ya cargados
-        let approvedExams = 0;
-        
-        //
-        if (profileState.userProgress && Array.isArray(profileState.userProgress.tests)) 
-        {
-            //
-            const approvedTopics = new Set();
-            
-            //
-            profileState.userProgress.tests.forEach(exam => 
-            {
-                //
-                if (exam.topic_id && exam.total_questions > 0) 
-                {
-                    //
-                    const scoreRatio = exam.correct_answers / exam.total_questions;
-                    
-                    //
-                    if (scoreRatio >= 0.8) 
-                    {
-                        //
-                        approvedTopics.add(exam.topic_id);
-                    }
-                }
-            });
-
-            //
-            approvedExams = approvedTopics.size;
-        }
-        
-        //
-        badgesState.badges = Array.isArray(badgesResult) ? badgesResult : [];
-        
-        //
-        badgesState.userApprovedExams = approvedExams;
-        
-        // Solo configurar la navegación de insignias si hay insignias disponibles
-        if (badgesState.badges && badgesState.badges.length > 0) 
-        {
-            //
-            setupBadgesNavigation();
-        }
-        
-        // 
-        const { data: userProgress, error } = await getUserProgress(userData.id);
-        
-        // 
-        profileState.userProgress = userProgress || null;
-        
-        // Solo después de cargar el progreso, inicializar el filtro de mes
-        await initMonthFilter();
-            
-        // 
-        const profileName = document.getElementById('profile-name');
-        
-        //
-        const profileEmail = document.getElementById('profile-email');
-        
-        //
-        const greetingName = document.getElementById('user-greeting-name');
-        
-        // 
-        const displayName = userData.name || userData.username || userData.email?.split('@')[0] || 'Usuario';
-        
-        // 
-        if (profileName) profileName.textContent = displayName;
-        
-        //
-        if (profileEmail) profileEmail.textContent = userData.email || 'No disponible';
-        
-        // Actualizar el nombre en el mensaje de bienvenida
-        if (greetingName) greetingName.textContent = displayName;
-        
-        //
-        if (profileState.userProgress) 
-        {
-            //
-            const studyMinutesTotalElement = document.getElementById('study-minutes-total');
-            
-            //
-            const examsTakenElement = document.getElementById('exams-taken');
-            
-            //
-            const approvedTopicsElement = document.getElementById('approved-topics-total'); 
-            
-            //
-            const month = profileState.selectedMonth;
-            
-            //
-            const year = profileState.selectedYear;
-            
-            //
-            const key = `${month}-${year}`;
-            
-            //
-            const minutes = profileState.userProgress.practiceByMonth?.[key] || 0;
-            
-            //
-            if (studyMinutesTotalElement) studyMinutesTotalElement.textContent = minutes.toFixed(2);
-            
-            //
-            const exams = profileState.userProgress.examsByMonth?.[key] || 0;
-            
-            //
-            if (examsTakenElement) examsTakenElement.textContent = exams;
-            
-            //
-            const topics = profileState.userProgress.approvedTopicsByMonth?.[key] || 0;
-            
-            //
-            if (approvedTopicsElement) approvedTopicsElement.textContent = topics;
-        }
-        
-        // 
-        const month = profileState.selectedMonth;
-        
-        //
-        const year = profileState.selectedYear;
-        
-        // Cargar los datos de perfil filtrados por mes y año
-        loadProfileData(month, year);
-    } 
-    catch (error) 
-    {
-        // Registrar cualquier error durante el proceso de carga
-        console.error('Error al cargar el perfil:', error);
-    }
-};
-
-// Función que actualiza la visualización de la medalla actual
-function updateBadgeDisplay() 
-{    
-    // Calcular el índice actual de la medalla, asegurando que esté dentro de los límites del array
-    const currentBadgeIndex = Math.max(0, Math.min(badgesState.currentBadgeIndex, badgesState.badges.length - 1));
-    const currentBadge = badgesState.badges[currentBadgeIndex];
-
-    // Obtener referencias a los elementos del DOM
-    var badgeName = document.getElementById('badge-name');
-    var badgeDescription = document.getElementById('badge-description');
-    var badgeProgress = document.getElementById('badge-progress');
-    var badgeImage = document.getElementById('badge-image');
-    var badgeTitle = document.getElementById('badge-title');
-    var badgeRequiredExams = document.getElementById('badge-required-exams');
-
-    if (currentBadge) {
-        if (badgeName) badgeName.textContent = currentBadge.title || '';
-        if (badgeDescription) badgeDescription.textContent = currentBadge.description || '';
-        if (badgeProgress) badgeProgress.textContent = `Progreso: ${badgesState.userApprovedExams}/${currentBadge.necessary_exams}`;
-        if (badgeImage) badgeImage.src = currentBadge.image_url || '';
-
-        // Calcular si la medalla está desbloqueada o no
-        const isUnlocked = currentBadge.necessary_exams === 0 || badgesState.userApprovedExams >= currentBadge.necessary_exams;
-        const progress = currentBadge.necessary_exams === 0 ? 100 : Math.min(Math.round((badgesState.userApprovedExams / currentBadge.necessary_exams) * 100), 100);
-
-        // Actualizar la imagen de la medalla y la clase CSS según si está desbloqueada
-        if (badgeImage) {
-            if (!isUnlocked) {
-                badgeImage.classList.add('badge-locked');
-            } else {
-                badgeImage.classList.remove('badge-locked');
-            }
-            setTimeout(() => {
-                badgeImage.src = currentBadge.image_url || 'img/badges/default-badge.png';
-            }, 10);
-        }
-
-        if (badgeTitle) badgeTitle.textContent = currentBadge.title || 'Sin nombre';
-        if (badgeRequiredExams) badgeRequiredExams.textContent = currentBadge.necessary_exams || '0';
-        if (badgeProgress) badgeProgress.textContent = `${progress}%`;
-    } else {
-        // Si no hay insignia, limpia los campos visuales
-        if (badgeName) badgeName.textContent = '';
-        if (badgeDescription) badgeDescription.textContent = '';
-        if (badgeProgress) badgeProgress.textContent = '';
-        if (badgeImage) {
-            badgeImage.src = '';
-            badgeImage.classList.remove('badge-locked');
-        }
-    }
-}
-
-// Función que configura la navegación entre insignias
-function setupBadgesNavigation() 
-{
-    // Obtener referencia al botón de medalla anterior
-    const prevButton = document.querySelector('.prev-badge');
-    
-    // Obtener referencia al botón de medalla siguiente
-    const nextButton = document.querySelector('.next-badge');
-    
-    // Clonar y reemplazar los botones para limpiar listeners previos
-    prevButton.replaceWith(prevButton.cloneNode(true));
-    
-    // 
-    nextButton.replaceWith(nextButton.cloneNode(true));
-    
-    // Obtener las nuevas referencias a los botones clonados
-    const newPrevButton = document.querySelector('.prev-badge');
-    
-    // 
-    const newNextButton = document.querySelector('.next-badge');
-    
-    // Listener para navegar a la medalla anterior
-    newPrevButton.addEventListener('click', () => {
-        // Calcular el índice anterior de la medalla (cíclico)
-        badgesState.currentBadgeIndex = (badgesState.currentBadgeIndex - 1 + badgesState.badges.length) % badgesState.badges.length;
-        
-        // Actualizar la visualización de la medalla
-        updateBadgeDisplay();
-    });
-    
-    // Listener para navegar a la medalla siguiente
-    newNextButton.addEventListener('click', () => {
-        // Calcular el índice siguiente de la medalla (cíclico)
-        badgesState.currentBadgeIndex = (badgesState.currentBadgeIndex + 1) % badgesState.badges.length;
-        
-        // Actualizar la visualización de la medalla
-        updateBadgeDisplay();
-    });
-    
-    // Mostrar la primera insignia al cargar la navegación
-    // Asegurar que empezamos por la medalla con order_index más bajo
-    badgesState.currentBadgeIndex = 0; 
-    
-    // Actualizar la visualización de la medalla
-    updateBadgeDisplay();
-}
-
+    // Inicializar la página de perfil con todas sus funcionalidades
+    initProfilePage();
+});
+   
 // Función que inicializa la página de perfil y todos sus módulos
 function initProfilePage() 
 {
-    // Verificar si hay usuario autenticado en localStorage/sessionStorage
-    const user = checkAuthentication();
-    
     // Cargar el sidebar de navegación de la app de forma asíncrona
-    import('./utils.js').then(({ loadSidebar }) => {
-        loadSidebar();
-    });
+    loadSidebar();
     
     // Cargar el perfil del usuario y estadísticas
     loadUserProfile();
     
-    // Inicializar la navegación de insignias (botones prev/next)
-    setupBadgesNavigation();
-    
     // Configurar el botón para regresar a la página principal
     const backButton = document.querySelector('.back-link');
     
-    //
+    // 
     backButton.addEventListener('click', (e) => 
     {
         // Prevenir el comportamiento por defecto del enlace
@@ -316,345 +66,112 @@ function initProfilePage()
     });
 }
 
-// Inicializar la página cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', () => 
+// Función que carga el perfil del usuario desde almacenamiento local o sesión
+async function loadUserProfile() 
 {
-    // Inicializar la página de perfil con todas sus funcionalidades
-    initProfilePage();
-    
-    // Configurar el evento para el filtro de mes (cambio de mes en el perfil)
-    const monthFilter = document.getElementById('month-filter');
-    
-    // 
-    monthFilter.addEventListener('change', function() 
-    {
-        // Obtener el mes seleccionado
-        const selectedMonth = parseInt(this.value, 10);
-        
-        // Obtener el año actual
-        const currentYear = new Date().getFullYear();
-        
-        // Recargar los datos del perfil con el nuevo mes y año
-        loadProfileData(selectedMonth, currentYear);
-    });
-});
-
-// Función que verifica la autenticación del usuario en localStorage/sessionStorage
-function checkAuthentication() 
-{
-    // Variable para almacenar los datos del usuario si existen
-    let user = null;
-    
-    // Intentar obtener datos del usuario de localStorage
-    const userStr = localStorage.getItem('user');
-    
-    // Si hay datos en localStorage, parsear y asignar a la variable user
-    if (userStr) 
-    {
-        // 
-        user = JSON.parse(userStr);
-        
-        // 
-        if (user && user.id) 
-        {
-            // 
-            return user;
-        }
-    }
-
-    // Si no hay usuario, redirigir al login de forma segura
-    if (!user || !user.id) 
-    {
-        // 
-        const safeLoginUrl = 'login.html';
-        
-        // 
-        window.location.href = safeLoginUrl;
-        
-        // 
-        return null;
-    }
-    
-    // 
-    return user;
-}
-
-// Función para actualizar la interfaz de usuario del perfil con datos del mes seleccionado
-function updateProfileUI(profileData) 
-{
-    // Actualizar datos del usuario en el encabezado
-    const userNameElement = document.querySelector('.user-name');
-    
-    //
-    const avatarInitialsElement = document.querySelector('.avatar-initials');
-    
-    //
-    const userGreetingNameElement = document.getElementById('user-greeting-name');
-    
-    // Intentar usar el nombre completo desde user_metadata si está disponible
-    let displayName = profileData.user.name;
-    
-    // Verificar si tenemos acceso a los metadatos del usuario
-    const user = checkAuthentication();
-    
-    //
-    if (user && user.user_metadata && user.user_metadata.full_name) 
-    {
-        //
-        displayName = user.user_metadata.full_name;
-    }
-    
-    //
-    if (userNameElement) userNameElement.textContent = displayName;
-    
-    //
-    if (avatarInitialsElement) avatarInitialsElement.textContent = displayName.charAt(0);
-    
-    //
-    if (userGreetingNameElement) userGreetingNameElement.textContent = displayName;
-    
-    // Actualizar tarjetas de estadísticas mensuales
-    const coursesCompletedElement = document.getElementById('courses-completed');
-    
-    //
-    const studyMinutesTotalElement = document.getElementById('study-minutes-total');
-    
-    //
-    const examsTakenElement = document.getElementById('exams-taken');
-    
-    //
-    if (coursesCompletedElement) coursesCompletedElement.textContent = profileData.monthly_stats.completed_courses;
-    
-    //
-    if (studyMinutesTotalElement) studyMinutesTotalElement.textContent = profileData.monthly_stats.study_minutes;
-    
-    //
-    if (examsTakenElement) examsTakenElement.textContent = profileData.monthly_stats.exams_taken;
-    
-    // Actualizar fecha mostrada
-    const dateElement = document.querySelector('.date');
-    
-    //
-    if (dateElement) dateElement.textContent = `${profileData.daily_study.monthName} ${profileData.daily_study.year || new Date().getFullYear()}`;
-    
-    //
-    createLearningStatsChart(profileData.daily_study);
-}
-
-// Función para cargar datos de perfil con filtrado por mes y año
-async function loadProfileData(month = new Date().getMonth() + 1, year = new Date().getFullYear()) 
-{
-    //
+    // Bloque try-catch para manejar posibles errores durante la carga del perfil
     try 
     {
-        // Obtener usuario actual usando la función refactorizada
-        const user = checkAuthentication();
+        // Definimos la variable donde almacenaremos los datos del usuario
+        let userData = null;
         
-        //
-        const userId = user.id;
+        // Obtenemos los datos del usuario desde localStorage
+        const userStr = localStorage.getItem('user');
+            
+        // Parseamos los datos del usuario
+        userData = JSON.parse(userStr);
         
-        //
-        const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-        
-        // Generar datos de días para el mes seleccionado
-        const daysInMonth = new Date(year, month, 0).getDate();
-        
-        //
-        const dayLabels = Array.from({length: daysInMonth}, (_, i) => i + 1);
+        // Guardamos los datos del usuario en el estado global
+        profileState.userProfile = userData;
 
-        // Inicializar array para minutos de práctica por día (todo en ceros inicialmente)
-        let practiceMinutesData = Array(daysInMonth).fill(0);
+        // Obtenemos el elemento donde se colocará el nombre del usuario en el mensaje de bienvenida
+        const greetingName = document.getElementById('user-greeting-name');
         
-        // Filtrar los tests del usuario para el mes y año seleccionados usando datos ya cargados
-        const userProgress = profileState.userProgress;
+        // Definimos el nombre del usuario
+        const displayName = userData.user_metadata.name;
+
+        // Definimos el nombre del usuario en el mensaje de bienvenida
+        greetingName.textContent = displayName;
         
-        // 
-        let userTests = [];
+        // Obtenemos el progreso del usuario
+        const { data: userProgress } = await getUserProgress(userData.id);
         
-        // 
-        let error = null;
+        // Almacenamos el progreso del usuario
+        profileState.userProgress = userProgress;
         
-        // 
-        if (userProgress && userProgress.tests && userProgress.tests.length > 0) 
+        // Definimos la variable para almacenar el número de exámenes aprobados por el usuario
+        let approvedExams = 0;
+        
+        // Si el usuario tiene progreso y el progreso es un array
+        if (profileState.userProgress && Array.isArray(profileState.userProgress.tests)) 
         {
-            // 
-            userTests = userProgress.tests.filter(test => {
-                // 
-                if (!test.start_time) return false;
-                
-                // 
-                const date = new Date(test.start_time);
-                
-                // 
-                return date.getMonth() + 1 === month && date.getFullYear() === year;
+            // Definimos la variable para almacenar los temas aprobados por el usuario
+            const approvedTopics = new Set();
+            
+            // Recorremos todos los exámenes del usuario
+            profileState.userProgress.tests.forEach(exam => 
+            {
+                // Si el examen tiene un tema asignado, preguntas y respuestas correctas
+                if (exam.topic_id && exam.total_questions > 0 && exam.correct_answers > 0) 
+                {
+                    // Calculamos el ratio de respuestas correctas sobre el total de preguntas
+                    const scoreRatio = exam.correct_answers / exam.total_questions;
+                    
+                    // Si el ratio es mayor o igual a 0.8
+                    if (scoreRatio >= 0.8) 
+                    {
+                        // Agregamos el tema a la lista de temas aprobados
+                        approvedTopics.add(exam.topic_id);
+                    }
+                }
             });
+
+            // Calculamos el número de exámenes aprobados
+            approvedExams = approvedTopics.size;
         }
-        // 
-        let totalPracticeMinutes = "0.00";
         
-        // 
-        let examsTaken = 0;
+        // Solo después de cargar el progreso, inicializar el filtro de mes
+        await initMonthFilter();
         
-        // 
-        let hasRealData = false;
+        // Obtenemos el mes seleccionado 
+        const month = profileState.selectedMonth;
         
-        // 
-        let approvedTopics = new Set();
+        // Obtenemos el año seleccionado
+        const year = profileState.selectedYear;
         
-        // 
-        if (userTests && userTests.length > 0) 
-        {
-            //
-            examsTaken = userTests.length;
-            
-            // 
-            userTests.forEach(test => 
-            {
-                //
-                if (test.score >= 80 && test.topic_id) 
-                {
-                    //
-                    approvedTopics.add(test.topic_id);
-                }
-            });
-            
-            // 
-            userTests.forEach(test => 
-            {
-                // Convertir fechas de string a objetos Date
-                const startTime = new Date(test.start_time);
-                
-                //
-                const endTime = new Date(test.end_time);
-                
-                // Calcular duración en minutos
-                const diffMs = endTime.getTime() - startTime.getTime();
-                
-                //
-                const durationMinutes = diffMs / 60000;
-                    
-                // Obtener día del mes (1-31) y añadir los minutos al array
-                const day = startTime.getDate();
+        // Cargar los datos de perfil para el mes y año seleccionado
+        loadProfileData(month, year);
 
-                //
-                if (day >= 1 && day <= daysInMonth) 
-                {
-                    //
-                    practiceMinutesData[day - 1] += durationMinutes;
-                }
-            });
-            
-            // Formatear valores con dos decimales
-            practiceMinutesData = practiceMinutesData.map(minutes => parseFloat(minutes.toFixed(2)));
-            
-            // Calcular total de minutos
-            totalPracticeMinutes = practiceMinutesData.reduce((sum, minutes) => sum + minutes, 0).toFixed(2);
-            
-            //
-            hasRealData = true; // Se encontraron datos reales para el mes seleccionado
-        } 
-        else 
-        {
-            // No hay datos para el mes seleccionado
-            if (error) 
-            {
-                // Si hubo un error al obtener los datos, mostrarlo en la consola
-                console.error('Error al obtener pruebas del usuario:', error);
-            } 
-            else 
-            {
-                // Mostrar mensaje de "no hay datos" en el contenedor del gráfico
-                const chartContainer = document.getElementById('learning-stats-chart');
-             
-                // Verificar que el contenedor y su padre existen en el DOM
-                if (chartContainer && chartContainer.parentNode) 
-                {
-                    // Limpiar mensajes previos de "no hay datos"
-                    const prevMsg = chartContainer.parentNode.querySelector('.no-data-message');
-                    
-                    // Si ya existe un mensaje previo, eliminarlo
-                    if (prevMsg) prevMsg.remove();
-                    
-                    // Agregar un nuevo mensaje de "no hay datos" al DOM
-                    chartContainer.parentNode.insertAdjacentHTML('beforeend', 
-                        '<div class="no-data-message">No hay datos de práctica para el mes seleccionado</div>');
-                }
-            }
-        }
-
-        // Preparar el objeto con los datos de perfil que se mostrarán en la UI
-        // Este objeto contiene información del usuario, estadísticas mensuales y datos diarios de estudio
-        const profileData = {
-            // Información del usuario
-            user: {
-                // Nombre del usuario (prioridad: name > username > 'Usuario')
-                // Se utiliza para mostrar el nombre del usuario en la UI
-                name: user.name || user.username || 'Usuario',
-                // Inicial de nombre para avatar o UI
-                // Se utiliza para mostrar la inicial del nombre del usuario en la UI
-                initials: (user.name || user.username || 'U').charAt(0)
-            },
-            // Estadísticas mensuales del usuario
-            monthly_stats: {
-                // Número de temas con puntaje ≥ 80%
-                // Se utiliza para mostrar el número de temas aprobados en la UI
-                completed_courses: approvedTopics.size,
-                // Minutos totales de estudio en el mes
-                // Se utiliza para mostrar el total de minutos de estudio en la UI
-                study_minutes: totalPracticeMinutes,
-                // Exámenes realizados en el mes
-                // Se utiliza para mostrar el número de exámenes realizados en la UI
-                exams_taken: examsTaken
-            },
-            // Datos diarios de estudio para el gráfico
-            daily_study: {
-                // Etiquetas de días del mes
-                // Se utiliza para crear las etiquetas del eje x en el gráfico
-                labels: dayLabels,
-                // Minutos de práctica por día
-                // Se utiliza para crear los datos del gráfico
-                values: practiceMinutesData,
-                // Mes seleccionado
-                // Se utiliza para mostrar el mes seleccionado en la UI
-                month: month,
-                // Año seleccionado
-                // Se utiliza para mostrar el año seleccionado en la UI
-                year: year,
-                // Nombre del mes
-                // Se utiliza para mostrar el nombre del mes en la UI
-                monthName: monthNames[month - 1],
-                // Indica si hay datos reales
-                // Se utiliza para mostrar un mensaje de "no hay datos" en la UI si no hay datos reales
-                hasRealData: hasRealData,
-                // Unidad de medida para los valores
-                // Se utiliza para mostrar la unidad de medida en la UI
-                unit: 'minutos'
-            }
-        };
+        // Obtenemos todas las medallas disponibles
+        const badgesResult = await getBadges();
         
-        // Actualizar la interfaz de usuario con los datos de perfil preparados
-        // Esta función se utiliza para actualizar la UI con los datos de perfil
-        updateProfileUI(profileData);        
+        // Almacenamos las insignias
+        badgesState.badges = Array.isArray(badgesResult) ? badgesResult : [];
+        
+        // Almacenamos el número de exámenes aprobados por el usuario
+        badgesState.userApprovedExams = approvedExams;
+        
+        // Configuramos la navegación de insignias
+        setupBadgesNavigation();
     } 
     catch (error) 
     {
-        // Mostrar en consola cualquier error ocurrido al cargar los datos de perfil
-        // Esta línea se utiliza para mostrar cualquier error que ocurra al cargar los datos de perfil
-        console.error('Error al cargar datos de perfil:', error);
+        // Generamos el mensaje de error
+        localStorage.setItem('ErrorMessage', 'Hubo un error al cargar los datos de tu perfil. Por favor, intentalo de nuevo.');
+                
+        // Redirigimos a la página de error
+        window.location.href = 'error.html';
     }
-}
+};
 
 // Función para inicializar el filtro de mes
 async function initMonthFilter() 
 {
-    // 
+    // Bloque try-catch para manejar cualquier posible error durante la inicialización del filtro de mes
     try 
     {
-        // 
+        // Obtenemos el elemento del filtro de mes
         const monthSelector = document.getElementById('month-filter');
-        
-        // Obtener usuario actual usando la función refactorizada
-        const user = checkAuthentication();
         
         // Usar el progreso del usuario almacenado en el estado global
         const userProgress = profileState.userProgress;
@@ -662,126 +179,344 @@ async function initMonthFilter()
         // Hacer accesible los tests globalmente para tests.js
         window.userExamData = (userProgress && Array.isArray(userProgress.tests)) ? userProgress.tests : [];
         
-        // Definir nombres de meses
+        // Definimos nombres de meses
         const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
         
         // Limpiar el selector existente
         monthSelector.innerHTML = '';
         
-        // Si tenemos datos de pruebas, calcular meses-año únicos
+        // Si tenemos datos de pruebas, calculamos meses-año únicos
         if (userProgress && userProgress.tests && userProgress.tests.length > 0) 
         {
-            // 
+            // Creamos un Set para almacenar meses-año únicos
             const uniqueMonthYears = new Set();
             
-            // 
+            // Recorremos todas las pruebas del usuario
             userProgress.tests.forEach(test => 
             {
-                // 
-                if (test.start_time) 
-                {
-                    // 
-                    const date = new Date(test.start_time);
-                    
-                    // 
-                    const month = date.getMonth() + 1;
-                    
-                    // 
-                    const year = date.getFullYear();
-                    
-                    // 
-                    uniqueMonthYears.add(`${month}-${year}`);
-                } else 
-                {
-                    // 
-                    console.warn('[Filtro Mes] Test sin start_time:', test);
-                }
+                // Obtenemos la fecha de inicio de la prueba
+                const date = new Date(test.start_time);
+                
+                // Obtenemos el mes de la fecha de inicio
+                const month = date.getMonth() + 1;
+                
+                // Obtenemos el año de la fecha de inicio
+                const year = date.getFullYear();
+                
+                // Agregamos el mes-año al Set
+                uniqueMonthYears.add(`${month}-${year}`);
             });
 
-            // 
+            // Convertimos el set a un array y ordenamos por fecha descendente
             const monthYears = Array.from(uniqueMonthYears).map(str => 
             {
-                // 
+                // Obtenemos el mes y año de la fecha de inicio
                 const [month, year] = str.split('-').map(Number);
                 
-                // 
+                // Retornamos el mes y año
                 return { month, year };
             }).sort((a, b) => b.year - a.year || b.month - a.month);
             
-            // 
+            // Recorremos el array de meses-año
             monthYears.forEach(item => 
             {
-                // 
+                // Creamos un elemento option
                 const option = document.createElement('option');
                 
-                // 
+                // Asignamos el valor del option
                 option.value = `${item.month}-${item.year}`;
                 
-                // 
+                // Asignamos el texto del option
                 option.textContent = `${monthNames[item.month - 1]} ${item.year}`;
                 
-                // 
+                // Obtenemos la fecha actual
                 const currentDate = new Date();
                 
-                // 
-                if (item.month === currentDate.getMonth() + 1 && item.year === currentDate.getFullYear()) 
-                {
-                    // 
-                    option.selected = true;
-                }
-
-                // 
+                // Agregamos el option al selector
                 monthSelector.appendChild(option);
             });
         } else 
         {
-            // 
-            const currentDate = new Date();
-            
-            // 
-            const option = document.createElement('option');
-            
-            // 
-            option.value = `${currentDate.getMonth() + 1}-${currentDate.getFullYear()}`;
-            
-            // 
-            option.textContent = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
-            
-            // 
-            option.selected = true;
-            
-            // 
-            monthSelector.appendChild(option);
+            // Mostramos un mensaje de no datos
         }
         
-        // Seleccionar el primer mes si ninguno está seleccionado
+        // Seleccionamos el primer mes si ninguno está seleccionado
         if (monthSelector.selectedIndex === -1 && monthSelector.options.length > 0) 
         {
-            //
+            // Seleccionamos el primer mes
             monthSelector.selectedIndex = 0;
         }
         
-        // Configurar el evento de cambio de mes
+        // Configuramos el evento de cambio de mes
         monthSelector.addEventListener('change', function() 
         {
-            //
+            // Obtenemos el mes y año seleccionados
             const [month, year] = this.value.split('-').map(Number);
             
-            //
+            // Cargamos los datos del usuario
             loadProfileData(month, year);
         });
         
-        // Cargar datos iniciales con el mes seleccionado
+        // Obtenemos el mes y año seleccionados
         const [month, year] = monthSelector.value.split('-').map(Number);
         
-        //
+        // Cargamos los datos iniciales del usuario
         loadProfileData(month, year);    
     } 
     catch (e) 
     {
-        //
-        console.error('Error al inicializar el filtro de mes:', e);
+        // Generamos el mensaje de error
+        localStorage.setItem('ErrorMessage', 'Hubo un error al cargar los datos de tu perfil. Por favor, intentalo de nuevo.');
+                
+        // Redirigimos a la página de error
+        window.location.href = 'error.html';
     }
+}
+
+// Función que configura la navegación entre insignias
+function setupBadgesNavigation() 
+{
+    // Bloque try-catch para manejar posibles errores durante la configuración de la navegación entre insignias
+    try
+    {
+        // Obtener referencia al botón de medalla anterior
+        const prevButton = document.querySelector('.prev-badge');
+
+        // Obtener referencia al botón de medalla siguiente
+        const nextButton = document.querySelector('.next-badge');
+
+        // Clonar y reemplazar los botones para limpiar listeners previos
+        prevButton.replaceWith(prevButton.cloneNode(true));
+
+        // 
+        nextButton.replaceWith(nextButton.cloneNode(true));
+
+        // Obtener las nuevas referencias a los botones clonados
+        const newPrevButton = document.querySelector('.prev-badge');
+
+        // 
+        const newNextButton = document.querySelector('.next-badge');
+
+        // Listener para navegar a la medalla anterior
+        newPrevButton.addEventListener('click', () => 
+        {
+            // Calcular el índice anterior de la medalla (cíclico)
+            badgesState.currentBadgeIndex = (badgesState.currentBadgeIndex - 1 + badgesState.badges.length) % badgesState.badges.length;
+            
+            // Actualizar la visualización de la medalla
+            updateBadgeDisplay();
+        });
+
+        // Listener para navegar a la medalla siguiente
+        newNextButton.addEventListener('click', () => 
+        {
+            // Calcular el índice siguiente de la medalla (cíclico)
+            badgesState.currentBadgeIndex = (badgesState.currentBadgeIndex + 1) % badgesState.badges.length;
+            
+            // Actualizar la visualización de la medalla
+            updateBadgeDisplay();
+        });
+
+        // Mostrar la primera insignia al cargar la navegación
+        badgesState.currentBadgeIndex = 0; 
+
+        // Actualizar la visualización de la medalla
+        updateBadgeDisplay();
+    }
+    catch (error)
+    {
+        // Generamos el mensaje de error
+        localStorage.setItem('ErrorMessage', 'Hubo un error al cargar los datos de tu perfil. Por favor, intentalo de nuevo.');
+                
+        // Redirigimos a la página de error
+        window.location.href = 'error.html';
+    }
+}
+
+// Función para obtener las estadísticas del usuario filtradas por mes y año
+async function loadProfileData(month = new Date().getMonth() + 1, year = new Date().getFullYear()) 
+{
+    // Bloque try-catch para manejar posibles errores durante la obtención del resumen de estadísticas
+    try 
+    {
+        // Obtenemos el progreso del usuario
+        const userProgress = profileState.userProgress;
+        
+        // Definimos el array de exámenes realizados por el usuario para el mes-año seleccionado
+        let userTests = [];
+        
+        // Si el usuario tiene exámenes realziados
+        if (userProgress.tests.length > 0) 
+        {
+            // Filtramos los exámenes del usuario por mes y año
+            userTests = userProgress.tests.filter(test => {
+                // Obtenemos la fecha de inicio del examen
+                const date = new Date(test.start_time);
+                
+                // Retornamos los exámenes que coinciden con el mes y año escogido
+                return date.getMonth() + 1 === month && date.getFullYear() === year;
+            });
+        }
+
+        // Definimos el número de exámenes realizados
+        let examsTaken = 0;
+        
+        // Definimos el número de temas aprobados
+        let approvedTopics = new Set();
+        
+        // Definimos el total de minutos de práctica
+        let totalPracticeMinutes = "0.00";
+
+        // Obtenemos la cantidad de días del mes seleccionado
+        const daysInMonth = new Date(year, month, 0).getDate();
+
+        // Definimos el array para los minutos de práctica por día
+        let practiceMinutesData = Array(daysInMonth).fill(0);
+
+        // Si el usuario tiene exámenes realizados en el mes-año seleccionado
+        if (userTests.length > 0) 
+        {
+            // Definimos el número de exámenes realizados
+            examsTaken = userTests.length;
+            
+            // Obtenemos la cantidad de temas aprobados
+            userTests.forEach(test => 
+            {
+                // Calculamos el ratio de respuestas correctas sobre el total de preguntas
+                const scoreRatio = test.correct_answers / test.total_questions;
+                
+                // Si el examen tiene un score superior a 80 es un tema aprobado
+                if (scoreRatio >= 0.8 && test.topic_id) 
+                {
+                    // Agregamos el tema a la lista de temas aprobados
+                    approvedTopics.add(test.topic_id);
+                }
+                
+                // Convertimos la fecha de inicio a un objeto Date
+                const startTime = new Date(test.start_time);
+                
+                // Convertimos la fecha de fin a un objeto Date
+                const endTime = new Date(test.end_time);
+                
+                // Calculamos la duración
+                const diffMs = endTime.getTime() - startTime.getTime();
+                
+                // Convertimos la duración a minutos
+                const durationMinutes = diffMs / 60000;
+                    
+                // Obtenemos el día del mes
+                const day = startTime.getDate();
+
+                // Si el día está dentro del rango válido
+                if (day >= 1 && day <= daysInMonth) 
+                {
+                    // Sumamos los minutos al día correspondiente
+                    practiceMinutesData[day - 1] += durationMinutes;
+                }
+            });
+            
+            // Formateamos los valores a dos decimales
+            practiceMinutesData = practiceMinutesData.map(minutes => parseFloat(minutes.toFixed(2)));
+            
+            // Calculamos el total de minutos de práctica del mes
+            totalPracticeMinutes = practiceMinutesData.reduce((sum, minutes) => sum + minutes, 0).toFixed(2);
+        } 
+        else 
+        {
+            // Obtenemos el contenedor del gráfico
+            const chartContainer = document.getElementById('learning-stats-chart');
+            
+            // Obtenemos el contenedor de mensaje de "no hay datos"
+            const prevMsg = chartContainer.parentNode.querySelector('.no-data-message');
+            
+            // Si existe un mensaje previo, eliminamos el mensaje
+            if (prevMsg) prevMsg.remove();
+            
+            // Agregamos un nuevo mensaje de "no hay datos"
+            chartContainer.parentNode.insertAdjacentHTML('beforeend', '<div class="no-data-message">No hay datos de práctica para el mes seleccionado</div>');
+        }
+
+        // Definimos los nombres de los meses
+        const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+        
+        // Obtenemos los números de los días del mes seleccionado
+        const dayLabels = Array.from({length: daysInMonth}, (_, i) => i + 1);
+
+        // Preparamos el objeto con los datos de perfil que se mostrarán en la UI
+        const profileData = 
+        {
+            // Estadísticas mensuales del usuario
+            monthly_stats: 
+            {
+                // Exámenes realizados en el mes
+                exams_taken: examsTaken,
+
+                // Número de temas aprobados
+                completed_courses: approvedTopics.size,
+                
+                // Minutos totales de estudio en el mes
+                study_minutes: totalPracticeMinutes
+            },
+            
+            // Datos diarios de estudio para el gráfico
+            daily_study: 
+            {
+                // Etiquetas de días del mes
+                labels: dayLabels,
+                
+                // Minutos de práctica por día
+                values: practiceMinutesData,
+                
+                // Mes seleccionado
+                month: month,
+                
+                // Año seleccionado
+                year: year,
+                
+                // Nombre del mes
+                monthName: monthNames[month - 1],
+                
+                // Unidad de medida para los valores
+                unit: 'minutos'
+            }
+        };
+        
+        // Actualizamos la interfaz de usuario con los datos de perfil preparados
+        updateProfileUI(profileData);     
+    } 
+    catch (error) 
+    {
+        // Generamos el mensaje de error
+        localStorage.setItem('ErrorMessage', 'Hubo un error al cargar los datos de tu perfil. Por favor, intentalo de nuevo.');
+                
+        // Redirigimos a la página de error
+        window.location.href = 'error.html';
+    }
+}
+
+// Función para actualizar la interfaz de usuario del perfil con datos del mes seleccionado
+function updateProfileUI(profileData) 
+{
+    // Obtenemos el elemento que contiente la cantidad de exámenes realizados
+    const examsTakenElement = document.getElementById('exams-taken');
+    
+    // Obtenemos el elemento que contiente la cantidad de temas aprobados
+    const coursesCompletedElement = document.getElementById('courses-completed');
+    
+    // Obtenemos el elemento que contiente la cantidad de minutos de práctica
+    const studyMinutesTotalElement = document.getElementById('study-minutes-total');
+    
+    // Actualizamos el contenido del card de exámenes realizados
+    examsTakenElement.textContent = profileData.monthly_stats.exams_taken;
+    
+    // Actualizamos el contenido del card de temas aprobados
+    coursesCompletedElement.textContent = profileData.monthly_stats.completed_courses;
+    
+    // Actualizamos el contenido del card de minutos de práctica
+    studyMinutesTotalElement.textContent = profileData.monthly_stats.study_minutes;
+    
+    // Actualizamos el gráfico de estadísticas de aprendizaje
+    createLearningStatsChart(profileData.daily_study);
 }
 
 // Función para crear el gráfico de horas de práctica por día
@@ -809,55 +544,179 @@ function createLearningStatsChart(dailyStudy)
     //
     if (noDataMsg) noDataMsg.remove();
     
-    // Crear el gráfico
-    window.learningChart = new Chart(ctx, {
+    // Creamos el gráfico
+    window.learningChart = new Chart(ctx, 
+    {
+        // Definimos el tipo de gráfico
         type: 'bar',
         
+        // Definimos los datos del gráfico
         data: 
         {
+            // 
             labels: dailyStudy.labels,
+
+            // 
             datasets: [{label: 'Minutos de práctica', data: dailyStudy.values, backgroundColor: primaryColor, borderColor: borderColor, borderWidth: 1, borderRadius: 4, barThickness: 8}]
         },
         
-        options: {responsive: true, maintainAspectRatio: false,
-            plugins: {
-                legend: {display: false},
-                tooltip: {backgroundColor: '#333', titleColor: '#fff', bodyColor: '#fff', titleFont: {size: 14, weight: 'bold'}, bodyFont: {size: 12},
+        // Definimos las opciones del gráfico
+        options: 
+        {
+            // 
+            responsive: true, 
+            
+            // 
+            maintainAspectRatio: false,
+            
+            // 
+            plugins: 
+            {
+                // 
+                legend: 
+                {
+                    // 
+                    display: false
+                },
+
+                // 
+                tooltip: 
+                {
+                    // 
+                    backgroundColor: '#333', 
+                    
+                    // 
+                    titleColor: '#fff', 
+                    
+                    // 
+                    bodyColor: '#fff', 
+                    
+                    // 
                     padding: 10,
-                    callbacks: {
-                        title: function(tooltipItems) {
+
+                    // 
+                    titleFont: 
+                    {
+                        // 
+                        size: 14, 
+                        
+                        // 
+                        weight: 'bold'
+                    }, 
+                    
+                    // 
+                    bodyFont: 
+                    {
+                        // 
+                        size: 12
+                    },
+                    
+                    // 
+                    callbacks: 
+                    {
+                        // 
+                        title: function(tooltipItems) 
+                        {
                             //
                             const day = tooltipItems[0].label;
-                            
+                        
                             //
                             return `Día ${day}`;
                         },
+                    
+                        // 
                         label: function(context) 
                         {
                             //
                             const value = context.raw;
-                            
+                        
                             //
                             if (value === 1) return '1 minuto';
-                            
+                        
                             //
                             return ` ${value} minutos`;
                         }
                     }
                 }
             },
-            scales: {
-                y: {beginAtZero: true, grid: { display: true, color: 'rgba(0, 0, 0, 0.05)'},
-                    ticks: {font: { size: 11 }, color: '#666',
-                        callback: function(value) {
+
+            // 
+            scales: 
+            {
+                // 
+                y: 
+                {
+                    // 
+                    beginAtZero: true, 
+                    
+                    // 
+                    grid: 
+                    { 
+                        // 
+                        display: true, 
+                        
+                        // 
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
+                    
+                    // 
+                    ticks: 
+                    {
+                        // 
+                        font: 
+                        { 
+                            // 
+                            size: 11 
+                        }, 
+                        
+                        // 
+                        color: '#666',
+                        
+                        // 
+                        callback: function(value) 
+                        {
+                            //
                             if (value === 0) return '0';
+                            
+                            //
                             return value + ' min';
                         }
                     }
                 },
-                x: {
-                    grid: {display: false},
-                    ticks: {font: {size: 11}, color: '#666', autoSkip: true, maxRotation: 0, minRotation: 0,
+                
+                // 
+                x: 
+                {
+                    // 
+                    grid: 
+                    {
+                        // 
+                        display: false
+                    },
+                    
+                    // 
+                    ticks: 
+                    {
+                        // 
+                        font: 
+                        {
+                            // 
+                            size: 11
+                        }, 
+                        
+                        // 
+                        color: '#666', 
+                        
+                        // 
+                        autoSkip: true, 
+                        
+                        // 
+                        maxRotation: 0, 
+                        
+                        // 
+                        minRotation: 0,
+                        
+                        // 
                         callback: function(value, index, ticks) 
                         {
                             // Mostrar todos los días del mes
@@ -878,13 +737,90 @@ function createLearningStatsChart(dailyStudy)
     }
 }
 
+// Función que actualiza la visualización de la medalla actual
+function updateBadgeDisplay() 
+{   
+    // Obtenemos el índice de la medalla actual
+    const currentBadgeIndex = Math.max(0, Math.min(badgesState.currentBadgeIndex, badgesState.badges.length - 1));
+    
+    // Obtenemos la información de la medalla actual
+    const currentBadge = badgesState.badges[currentBadgeIndex];
+
+    // Obtenemos el elemento que contendrá la imagen de la medalla
+    const badgeImage = document.getElementById('badge-image');
+    
+    // Obtenemos el elemento que contendrá el nombre de la medalla
+    const badgeName = document.getElementById('badge-name');
+    
+    // Obtenemos el elemento que contendrá la cantidad de exámenes necesarios
+    const badgeRequiredExams = document.getElementById('badge-required-exams');
+    
+    // Obtenemos el elemento que contendrá el porcentaje de avance
+    const badgeProgress = document.getElementById('badge-progress');
+    
+    // Definimos si la medalla está desbloqueada o no
+    const isUnlocked = currentBadge.necessary_exams === 0 || badgesState.userApprovedExams >= currentBadge.necessary_exams;
+    
+    // Si la medalla no está desbloqueada
+    if (!isUnlocked) 
+    {
+        // Eliminamos la imagen
+        badgeImage.src = '';
+
+        // Agregamos la clase de medalla bloqueada
+        badgeImage.classList.add('badge-locked');
+
+        // Asignamos la imagen
+        badgeImage.src = currentBadge.image_url;
+    } else 
+    {
+        // Eliminamos la imagen
+        badgeImage.src = '';
+
+        // Eliminamos la clase de medalla bloqueada
+        badgeImage.classList.remove('badge-locked');
+
+        // Asignamos la imagen
+        badgeImage.src = currentBadge.image_url;
+    }
+
+    // Asignamos el nombre de la medalla
+    badgeName.textContent = currentBadge.title || '';
+
+    // Si la medalla no requiere exámenes aprobados
+    if (currentBadge.necessary_exams === 0)
+    {
+        // Asignamos la cantidad de exámenes necesarios
+        badgeRequiredExams.textContent = 'Medalla de bienvenida';
+    }
+    else
+    {
+        // Asignamos la cantidad de exámenes necesarios
+        badgeRequiredExams.textContent = currentBadge.necessary_exams;
+    }    
+
+    // Calculamos el progreso
+    const progress = badgesState.userApprovedExams / currentBadge.necessary_exams;
+
+    // Si la medalla no requiere exámenes aprobados
+    if (currentBadge.necessary_exams === 0)
+    {
+        // Asignamos el progreso
+        badgeProgress.textContent = '100%';
+    }
+    else
+    {
+        // Asignamos el progreso
+        badgeProgress.textContent = Math.round(progress * 100) + '% (' + badgesState.userApprovedExams + '/' + currentBadge.necessary_exams + ')';
+    }
+}
+
 // Exportar funciones y estados necesarios para uso en otros archivos
 export 
 {    
     profileState,
     badgesState,
     loadUserProfile,
-    checkAuthentication,
     initProfilePage,
     updateBadgeDisplay,
     setupBadgesNavigation,

@@ -36,7 +36,7 @@ async function initTestsPage()
         localStorage.setItem('user', JSON.stringify(currentUser));    
 
         // Realizamos una consulta a Supabase para obtener todos los exámenes del usuario
-        const { data, error } = await supabase.from('user_tests').select('*, course:courses!course_id(id,title), topic:topics!topic_id(id,title)').eq('user_id', currentUser.id).order('end_time', { ascending: false });
+        const { data } = await supabase.from('user_tests').select('*, course:courses!course_id(id,title), topic:topics!topic_id(id,title)').eq('user_id', currentUser.id).order('end_time', { ascending: false });
         
         // Asignamos el resultado (array de pruebasa) a la variable global
         allTests = data || [];
@@ -197,19 +197,6 @@ async function setupMonthFilter()
 // Función para filtrar pruebas por mes
 function filterTestsByMonth(monthFilter) 
 {
-    // Si no hay pruebas, mostramos el mensaje de "no pruebas"
-    if (!allTests || allTests.length === 0) 
-    {
-        // Asignamos las pruebas actuales
-        currentTests = [];
-        
-        // Mostramos el mensaje de "no pruebas"
-        showNoTestsMessage(true);
-        
-        // Salimos de la función
-        return;
-    }
-    
     // Extraemos mes y año
     const [month, year] = monthFilter.split('-');
     
@@ -460,34 +447,4 @@ function updateSummary()
     
     // Promedio de tiempo
     avgTimeEl.textContent = `${avgTime.toFixed(2)} min`;
-}
-
-// Función para mostrar el mensaje de "no pruebas"
-function showNoTestsMessage(show) 
-{
-    // Obtenemos el contenedor principal
-    const container = document.getElementById('tests-list');
-    
-    // Obtenemos el elemento del mensaje de "no pruebas"
-    const noTestsMessage = document.getElementById('no-tests-message');
-    
-    // Si el parámetro show es true, mostramos el mensaje
-    if (show) 
-    {
-        // Si el mensaje aún no está dentro del contenedor principal
-        if (!container.contains(noTestsMessage)) 
-        {
-            // Lo añadimos al contenedor para que sea visible en el DOM
-            container.appendChild(noTestsMessage);
-        }
-        
-        // Mostramos el mensaje estableciendo su display a 'flex'
-        noTestsMessage.style.display = 'flex';
-    } 
-    // Si show es false y el mensaje existe
-    else if (noTestsMessage) 
-    {
-        // Ocultamos el mensaje estableciendo su display a 'none'
-        noTestsMessage.style.display = 'none';
-    }
 }
