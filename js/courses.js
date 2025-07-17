@@ -109,6 +109,9 @@ function renderCourseList(courses)
             // Eliminamos el primer hijo hasta que no quede ninguno
             courseList.removeChild(courseList.firstChild);
         }
+
+        // Creamos un fragmento de documento para mejorar el rendimiento al añadir múltiples elementos
+        const fragment = document.createDocumentFragment();
         
         // Recorremos el arreglo de cursos recibido
         courses.forEach(course => 
@@ -191,15 +194,20 @@ function renderCourseList(courses)
             // Insertamos el bloque de información en la tarjeta del curso
             courseCard.appendChild(infoDiv);
             
-            // Insertamos la tarjeta ya armada en el contenedor principal de cursos
-            courseList.appendChild(courseCard);
-        
             // Asociamos un evento click a la tarjeta para seleccionar el curso
             courseCard.addEventListener('click', () => selectCourse(course.id));
+
+            // Añadimos la tarjeta completa al fragmento de documento
+            fragment.appendChild(courseCard);
         });
         
-        // Si el arreglo de cursos está vacío, mostramos un mensaje de "sin resultados"
-        if (courses.length === 0) 
+        // Verificamos si hay cursos para mostrar
+        if (courses.length > 0) 
+        {
+            // Si hay cursos, añadimos el fragmento con todas las tarjetas al DOM
+            courseList.appendChild(fragment);
+        }
+        else 
         {
             // Creamos el div para el mensaje de no resultados
             const noResultsDiv = document.createElement('div');
