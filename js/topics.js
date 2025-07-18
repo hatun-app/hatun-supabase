@@ -1,7 +1,7 @@
 // Módulo para la página de temas
 
 // Importamos las dependencias necesarias
-import { getTopics } from './supabase.js';
+import { getTopics, signOut } from './supabase.js';
 
 // Estado local para la gestión de temas
 const topicsState = 
