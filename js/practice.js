@@ -953,7 +953,7 @@ async function finishPractice(finishReason = 'Por usuario')
         // Detener el temporizador
         stopTimer();
         
-        // Calcular resultados
+        // Calcular resultados pasando el motivo de finalización
         const results = calculateResults(finishReason);
         
         // Asignar el motivo de finalización
@@ -990,6 +990,19 @@ async function finishPractice(finishReason = 'Por usuario')
         // Obtenemos el course_id del tema actual
         courseId = exerciseState.selectedTopic.courseId;
         
+        // Calculamos la hora de fin adecuada según el tipo de finalización
+        let endTime = new Date();
+        
+        // Si la finalización fue por tiempo, calculamos el fin exacto como inicio + duración programada
+        if (finishReason === 'Por tiempo') 
+        {
+            // Obtenemos la duración programada en milisegundos
+            const durationMs = exerciseState.practiceMode.expectedDuration * 60 * 1000; // Convertir minutos a milisegundos
+            
+            // Calculamos la hora de fin como inicio + duración programada
+            endTime = new Date(exerciseState.practiceMode.startTime.getTime() + durationMs);
+        }
+        
         // Creamos el objeto de datos para guardar
         const testData = 
         {
@@ -1006,10 +1019,10 @@ async function finishPractice(finishReason = 'Por usuario')
             start_time: exerciseState.practiceMode.startTime.toISOString(),
             
             // Fecha de finalización
-            end_time: new Date().toISOString(),
+            end_time: endTime.toISOString(),
             
             // Duración esperada
-            expected_duration: Number(results.expectedDuration), // Asegurar que es número
+            expected_duration: Number(results.expectedDuration), // La duración esperada en minutos
             
             // Información sobre la prueba
             completion_type: finishReason,
