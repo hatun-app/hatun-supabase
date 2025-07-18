@@ -17,7 +17,7 @@ async function signInWithGoogle()
     try 
     {
         // Definimos la URL a la que será redirigido el usuario después de autenticarse
-        const redirectUrl = 'https://pages.hatun.app/login.html';
+        const redirectUrl = 'http://localhost:8080/login.html';
         
         // Verificamos la sesión actual antes de iniciar OAuth para evitar inicios de sesión duplicados
         const { data: sessionData } = await supabase.auth.getSession();
@@ -191,7 +191,7 @@ async function saveUserTest(userData)
     try 
     {
         // Obtenemos la sesión actual de Supabase para identificar al usuario autenticado
-        const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+        const { data: sessionData } = await supabase.auth.getSession();
 
         // Extraemos el ID del usuario autenticado de la sesión
         const authenticatedUserId = sessionData.session.user.id;
@@ -237,11 +237,11 @@ async function saveUserTest(userData)
         };
         
         // Guardamos los resultados de la prueba en la tabla 'user_tests' de Supabase
-        const { data, error } = await supabase.from('user_tests').insert([validatedData]).select();
+        const { data } = await supabase.from('user_tests').insert([validatedData]).select();
         
         // Retornamos el resultado de la inserción
         return { data };
-    } catch (e) 
+    } catch (error) 
     {
         // Si ocurre un error, guardamos un mensaje en localStorage para mostrarlo en la página de error
         localStorage.setItem('ErrorMessage', 'Ocurrió un error al intentar guardar tus resultados. Por favor intentalo de nuevo.');
