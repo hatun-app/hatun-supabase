@@ -954,7 +954,7 @@ async function finishPractice(finishReason = 'Por usuario')
         stopTimer();
         
         // Calcular resultados
-        const results = calculateResults();
+        const results = calculateResults(finishReason);
         
         // Asignar el motivo de finalización
         results.finishReason = finishReason; // Aseguramos que el motivo de finalización se guarde
@@ -1035,7 +1035,7 @@ async function finishPractice(finishReason = 'Por usuario')
 }
 
 // Función para calcular los resultados de la práctica
-function calculateResults() 
+function calculateResults(finishReason = 'Por usuario') 
 {
     // Obtenemos el inicio de la práctica
     const startTime = exerciseState.practiceMode.startTime;
@@ -1044,7 +1044,14 @@ function calculateResults()
     const endTime = new Date();
     
     // Obtenemos el tiempo tomado
-    const timeTaken = Math.floor((endTime - startTime) / 1000); // Tiempo en segundos
+    let timeTaken = Math.floor((endTime - startTime) / 1000); // Tiempo en segundos
+    
+    // Si la finalización fue por tiempo, ajustamos el tiempo tomado al tiempo programado
+    if (finishReason === 'Por tiempo') 
+    {
+        // Si finalizó por tiempo, usamos exactamente el tiempo programado (en segundos)
+        timeTaken = exerciseState.practiceMode.expectedDuration * 60;
+    }
     
     // Obtenemos el total de ejercicios
     const totalExercises = exerciseState.exercises.length;
