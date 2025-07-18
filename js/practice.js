@@ -788,23 +788,11 @@ function startTimer()
         clearInterval(exerciseState.practiceMode.timerId);
     }
     
-    // 
-    exerciseState.practiceMode.startTime = Date.now();
-
-    // 
-    exerciseState.practiceMode.endTime = exerciseState.practiceMode.startTime + (exerciseState.practiceMode.remainingTime * 1000);
-    
-    // Actualizar el cronómetro cada 100ms para mayor precisión
+    // Actualizar el cronómetro cada segundo
     exerciseState.practiceMode.timerId = setInterval(() => 
     {
-        // 
-        const now = Date.now();
-
-        // 
-        const timeLeft = Math.max(0, Math.floor((exerciseState.practiceMode.endTime - now) / 1000));
-        
-        // Actualizar el tiempo restante en el estado
-        exerciseState.practiceMode.remainingTime = timeLeft;
+        // Decrementar el tiempo restante
+        exerciseState.practiceMode.remainingTime--;
         
         // Actualizar el texto del cronómetro
         const timerText = document.getElementById('timer-text');
@@ -833,7 +821,7 @@ function startTimer()
             // Finalizar la práctica
             finishPractice('Por tiempo');
         }
-    }, 100); 
+    }, 1000);
 }
 
 // Función para detener el cronómetro
@@ -959,82 +947,91 @@ function showConfirmationModal(title, message, confirmText, cancelText, confirmC
 // Función para finalizar la práctica
 async function finishPractice(finishReason = 'Por usuario') 
 {
-    // Detener el temporizador
-    stopTimer();
-    
-    // Calcular resultados
-    const results = calculateResults();
-    
-    // Asignar el motivo de finalización
-    results.finishReason = finishReason; // Aseguramos que el motivo de finalización se guarde
-    
-    // Mostrar la pantalla de resultados inmediatamente para mejor UX
-    showResultsScreen(results);
-    
-    // Obtener el usuario actual del localStorage (como estaba originalmente)
-    const userStr = localStorage.getItem('user');
-    
-    // Parseamos el usuario
-    const user = JSON.parse(userStr);
-    
-    // Simplificamos el objeto de detalles para evitar problemas de serialización
-    const simplifiedResults = [];
-    
-    // Recorremos los resultados
-    results.exerciseResults.forEach(result => 
+    // Bloque try-catch para manejar posibles errores al momento de intentar finalizar las práctica
+    try
     {
-        // Añadimos el resultado simplificado
-        simplifiedResults.push({
-            exerciseId: result.exerciseId,
-            questionText: result.questionText,
-            userAnswer: result.userAnswer,
-            correctAnswer: result.correctAnswer,
-            isCorrect: result.isCorrect
+        // Detener el temporizador
+        stopTimer();
+        
+        // Calcular resultados
+        const results = calculateResults();
+        
+        // Asignar el motivo de finalización
+        results.finishReason = finishReason; // Aseguramos que el motivo de finalización se guarde
+        
+        // Mostrar la pantalla de resultados inmediatamente para mejor UX
+        showResultsScreen(results);
+        
+        // Obtener el usuario actual del localStorage (como estaba originalmente)
+        const userStr = localStorage.getItem('user');
+        
+        // Parseamos el usuario
+        const user = JSON.parse(userStr);
+        
+        // Simplificamos el objeto de detalles para evitar problemas de serialización
+        const simplifiedResults = [];
+        
+        // Recorremos los resultados
+        results.exerciseResults.forEach(result => 
+        {
+            // Añadimos el resultado simplificado
+            simplifiedResults.push({
+                exerciseId: result.exerciseId,
+                questionText: result.questionText,
+                userAnswer: result.userAnswer,
+                correctAnswer: result.correctAnswer,
+                isCorrect: result.isCorrect
+            });
         });
-    });
-    
-    // Obtenemos el course_id del tema actual o del ejercicio
-    let courseId = null;
         
-    // Obtenemos el course_id del tema actual
-    courseId = exerciseState.selectedTopic.courseId;
-    
-    // Creamos el objeto de datos para guardar
-    const testData = 
+        // Obtenemos el course_id del tema actual o del ejercicio
+        let courseId = null;
+            
+        // Obtenemos el course_id del tema actual
+        courseId = exerciseState.selectedTopic.courseId;
+        
+        // Creamos el objeto de datos para guardar
+        const testData = 
+        {
+            // ID del usuario
+            user_id: user.id,
+            
+            // ID del tema
+            topic_id: Number(results.topicId), // Asegurar que es número
+            
+            // ID del curso
+            course_id: Number(courseId), // Añadir course_id que es requerido según el error
+            
+            // Campos de tiempo
+            start_time: exerciseState.practiceMode.startTime.toISOString(),
+            
+            // Fecha de finalización
+            end_time: new Date().toISOString(),
+            
+            // Duración esperada
+            expected_duration: Number(results.expectedDuration), // Asegurar que es número
+            
+            // Información sobre la prueba
+            completion_type: finishReason,
+            
+            // Total de ejercicios
+            total_questions: Number(results.totalExercises), // Asegurar que es número
+            
+            // Total de respuestas correctas
+            correct_answers: Number(results.correct) // Asegurar que es número
+        };
+        
+        // Llamar a la función saveUserTest de supabase.js
+        await saveUserTest(testData);
+    }
+    catch (error)
     {
-        // ID del usuario
-        user_id: user.id,
-        
-        // ID del tema
-        topic_id: Number(results.topicId), // Asegurar que es número
-        
-        // ID del curso
-        course_id: Number(courseId), // Añadir course_id que es requerido según el error
-        
-        // Campos de tiempo
-        start_time: exerciseState.practiceMode.startTime.toISOString(),
-        
-        // Fecha de finalización
-        end_time: new Date().toISOString(),
-        
-        // Duración esperada
-        expected_duration: Number(results.expectedDuration), // Asegurar que es número
-        
-        // Información sobre la prueba
-        completion_type: finishReason || 'completed',
-        
-        // Total de ejercicios
-        total_questions: Number(results.totalExercises), // Asegurar que es número
-        
-        // Total de respuestas correctas
-        correct_answers: Number(results.correct) // Asegurar que es número
-    };
-    
-    // Llamar a la función saveUserTest de supabase.js
-    const savedResult = await saveUserTest(testData);
-    
-    // Obtenemos el ID del resultado guardado
-    savedResult.data[0]?.id || 'No ID';
+        // Generamos el mensaje de error
+        localStorage.setItem('ErrorMessage', 'Ocurrió un error al intentar guardar tus resultados. Por favor intentalo de nuevo.');
+                
+        // Redirigir a la página de error
+        window.location.href = 'error.html';
+    }
 }
 
 // Función para calcular los resultados de la práctica
