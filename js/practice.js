@@ -788,11 +788,23 @@ function startTimer()
         clearInterval(exerciseState.practiceMode.timerId);
     }
     
-    // Actualizar el cronómetro cada segundo
+    // 
+    exerciseState.practiceMode.startTime = Date.now();
+
+    // 
+    exerciseState.practiceMode.endTime = exerciseState.practiceMode.startTime + (exerciseState.practiceMode.remainingTime * 1000);
+    
+    // Actualizar el cronómetro cada 100ms para mayor precisión
     exerciseState.practiceMode.timerId = setInterval(() => 
     {
-        // Decrementar el tiempo restante
-        exerciseState.practiceMode.remainingTime--;
+        // 
+        const now = Date.now();
+
+        // 
+        const timeLeft = Math.max(0, Math.floor((exerciseState.practiceMode.endTime - now) / 1000));
+        
+        // Actualizar el tiempo restante en el estado
+        exerciseState.practiceMode.remainingTime = timeLeft;
         
         // Actualizar el texto del cronómetro
         const timerText = document.getElementById('timer-text');
@@ -821,7 +833,7 @@ function startTimer()
             // Finalizar la práctica
             finishPractice('Por tiempo');
         }
-    }, 1000);
+    }, 100); 
 }
 
 // Función para detener el cronómetro
