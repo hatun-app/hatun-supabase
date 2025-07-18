@@ -677,6 +677,9 @@ function initPracticeMode(durationMinutes)
         // Establecer el tiempo restante
         remainingTime: 0,
         
+        // Almacenar el tiempo inicial programado (en segundos)
+        initialTime: 0,
+        
         // Establecer el ID del temporizador
         timerId: null
     };
@@ -687,8 +690,14 @@ function initPracticeMode(durationMinutes)
     // Establecer la duración esperada
     exerciseState.practiceMode.expectedDuration = durationMinutes;
     
-    // Calcular el tiempo restante en segundos
-    exerciseState.practiceMode.remainingTime = durationMinutes * 60;
+    //
+    const durationSeconds = durationMinutes * 60;
+
+    //
+    exerciseState.practiceMode.remainingTime = durationSeconds;
+    
+    // Guardar el tiempo inicial programado en segundos
+    exerciseState.practiceMode.initialTime = durationSeconds;
     
     // Registrar la hora de inicio
     exerciseState.practiceMode.startTime = new Date();
@@ -962,8 +971,8 @@ async function finishPractice(finishReason = 'Por usuario')
     // Detener el temporizador
     stopTimer();
     
-    // Calcular resultados
-    const results = calculateResults();
+    // Calcular resultados pasando el motivo de finalización
+    const results = calculateResults(finishReason);
     
     // Asignar el motivo de finalización
     results.finishReason = finishReason; // Aseguramos que el motivo de finalización se guarde
@@ -1038,7 +1047,7 @@ async function finishPractice(finishReason = 'Por usuario')
 }
 
 // Función para calcular los resultados de la práctica
-function calculateResults() 
+function calculateResults(finishReason) 
 {
     // Obtenemos el inicio de la práctica
     const startTime = exerciseState.practiceMode.startTime;
@@ -1047,7 +1056,17 @@ function calculateResults()
     const endTime = new Date();
     
     // Obtenemos el tiempo tomado
-    const timeTaken = Math.floor((endTime - startTime) / 1000); // Tiempo en segundos
+    let timeTaken;
+    
+    // Si el motivo de finalización es por tiempo, usamos la duración programada exacta
+    if (finishReason === 'Por tiempo') {
+        // Usar la duración programada (en segundos)
+        timeTaken = exerciseState.practiceMode.initialTime;
+    } else 
+    {
+        // Calcular tiempo real transcurrido
+        timeTaken = Math.floor((endTime - startTime) / 1000);
+    }
     
     // Obtenemos el total de ejercicios
     const totalExercises = exerciseState.exercises.length;
