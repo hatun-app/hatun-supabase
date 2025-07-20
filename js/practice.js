@@ -232,6 +232,9 @@ function checkAnswer(selectedIndex)
     return isCorrect;
 }
 
+// Variable para almacenar referencias a los event listeners
+let eventListenersSetup = false;
+
 // Función para configurar los manejadores de eventos de los ejercicios
 function setupExerciseEventListeners() 
 {
@@ -265,67 +268,60 @@ function setupExerciseEventListeners()
         });
     }
     
-    // Botón anterior
-    document.getElementById('prev-exercise')?.addEventListener('click', () => 
-    {
-        // Permitir navegación con botones también en modo práctica
-        const currentIndex = exerciseState.exercises.findIndex(ex => ex.id === exerciseState.currentExerciseId);
+    // Solo configurar listeners una vez para evitar duplicados
+    if (!eventListenersSetup) {
+        // Usar event delegation en el contenedor padre para evitar duplicados
+        const exerciseContainer = document.getElementById('exercise-content');
         
-        // Si no es el primer ejercicio
-        if (currentIndex > 0) 
-        {
-            // Renderizar el ejercicio anterior
-            renderExercise(exerciseState.exercises[currentIndex - 1].id);
+        if (exerciseContainer) {
+            // Delegated event listener para botones de navegación
+            exerciseContainer.addEventListener('click', (e) => {
+                // Botón anterior
+                if (e.target.id === 'prev-exercise' || e.target.closest('#prev-exercise')) {
+                    console.log('prev-exercise');
+                    const currentIndex = exerciseState.exercises.findIndex(ex => ex.id === exerciseState.currentExerciseId);
+                    
+                    if (currentIndex > 0) {
+                        renderExercise(exerciseState.exercises[currentIndex - 1].id);
+                    }
+                    return;
+                }
+                
+                // Botón siguiente
+                if (e.target.id === 'next-exercise' || e.target.closest('#next-exercise')) {
+                    console.log('next-exercise');
+                    const currentIndex = exerciseState.exercises.findIndex(ex => ex.id === exerciseState.currentExerciseId);
+                    
+                    if (currentIndex < exerciseState.exercises.length - 1) {
+                        const nextExerciseId = exerciseState.exercises[currentIndex + 1].id;
+                        renderExercise(nextExerciseId);
+                    } else {
+                        alert('¡Has completado todos los ejercicios!');
+                    }
+                    return;
+                }
+                
+                // Botón Finalizar
+                if (e.target.id === 'submit-answer' || e.target.closest('#submit-answer')) {
+                    const exercise = exerciseState.exercises.find(ex => ex.id === exerciseState.currentExerciseId);
+                    
+                    if (!exercise) return;
+                    
+                    showConfirmationModal(
+                        '¿Estás seguro de finalizar la práctica?',
+                        'Una vez finalizada, no podrás volver a responder las preguntas.',
+                        'Finalizar',
+                        'Cancelar',
+                        () => finishPractice('Por usuario')
+                    );
+                    return;
+                }
+            });
+            
+            eventListenersSetup = true;
         }
-    });
-    
-    // Botón siguiente
-    document.getElementById('next-exercise')?.addEventListener('click', () => 
-    {
-        // Permitir navegación con botones también en modo práctica
-        const currentIndex = exerciseState.exercises.findIndex(ex => ex.id === exerciseState.currentExerciseId);
-        
-        // Si no es el último ejercicio
-        if (currentIndex < exerciseState.exercises.length - 1) 
-        {
-            // Renderizar el ejercicio siguiente
-            const nextExerciseId = exerciseState.exercises[currentIndex + 1].id;
-            
-            // Renderizar el ejercicio siguiente
-            renderExercise(nextExerciseId);
-        } 
-        else 
-        {
-            // Mostrar mensaje de finalización
-            alert('¡Has completado todos los ejercicios!');
-        }
-    });
-    
-    // Botón Finalizar (para modo práctica)
-    const actionButton = document.getElementById('submit-answer');
-    
-    // Si se encuentra el botón
-    if (actionButton) 
-    {
-        // Configurar el manejador de eventos
-        actionButton.addEventListener('click', () => 
-        {
-            // Buscar el ejercicio actual
-            const exercise = exerciseState.exercises.find(ex => ex.id === exerciseState.currentExerciseId);
-            
-            // Si no se encuentra el ejercicio
-            if (!exercise) return;
-            
-            // Mostrar modal de confirmación para finalizar la práctica
-            showConfirmationModal(
-                '¿Estás seguro de finalizar la práctica?',
-                'Una vez finalizada, no podrás volver a responder las preguntas.',
-                'Finalizar',
-                'Cancelar',
-                () => finishPractice('Por usuario')
-            );
-        });
     }
+
     
     // Contenedor de opciones
     const optionsContainer = document.querySelector('.exercise-options');
@@ -643,8 +639,8 @@ document.addEventListener('DOMContentLoaded', async () =>
     // Cargar los ejercicios
     await loadTopicExercises(selectedTopic.id);
 
-    // Configurar los eventos de los ejercicios
-    setupExerciseEventListeners();
+    // Los event listeners ya se configuran en loadTopicExercises -> renderExercise -> setupExerciseEventListeners
+    // No necesitamos llamarlo de nuevo aquí
     
     // Obtener duración de localStorage
     const durationPractice = localStorage.getItem('practiceDuration');  
