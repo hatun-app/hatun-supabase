@@ -84,7 +84,7 @@ async function getCourses()
     try 
     {
         // Realizamos una consulta a la tabla 'courses' para obtener todos los cursos disponibles
-        const { data: courses, error } = await supabase.from('courses').select('*')
+        const { data: courses, error } = await supabase.from('courses').select('*').order('title')
         
         // Para cada curso, obtener el número de temas y ejercicios asociados mediante un mapeo
         const coursesWithCounts = await Promise.all(courses.map(async (course) => 
