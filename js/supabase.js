@@ -169,7 +169,7 @@ async function getExercises(topicId)
     try 
     {
         // Realizamos la consulta a la tabla 'exercises' filtrando por el ID del tema
-        const { data, error } = await supabase.from('exercises').select('*').eq('topic_id', topicId);
+        const { data, error } = await supabase.from('exercises').select('*').eq('topic_id', topicId).order('order_index');
            
         // Devolvemos los datos obtenidos o un array vacío si no hay resultados
         return data || [];
