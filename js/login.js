@@ -578,20 +578,16 @@ async function handleGoogleLogin(e)
     }
 }
 
-// Solo ejecutar el sistema de autenticación en la página de login
-const currentPath = window.location.pathname;
-if (currentPath.endsWith('login.html') || currentPath.endsWith('/login')) {
-    // Comprueba el estado de carga del documento para inicializar la autenticación en el momento adecuado
-    if (document.readyState === 'loading') 
-    {
-        // Si el documento aún se está cargando, espera al evento DOMContentLoaded antes de inicializar
-        document.addEventListener('DOMContentLoaded', initAuth); // Se asegura que el DOM esté listo para manipulación
-    } 
-    else 
-    {
-        // Si el documento ya está cargado, inicializa directamente
-        initAuth(); // Llama a la función principal de inicialización de autenticación
-    }
+// Comprueba el estado de carga del documento para inicializar la autenticación en el momento adecuado
+if (document.readyState === 'loading') 
+{
+    // Si el documento aún se está cargando, espera al evento DOMContentLoaded antes de inicializar
+    document.addEventListener('DOMContentLoaded', initAuth); // Se asegura que el DOM esté listo para manipulación
+} 
+else 
+{
+    // Si el documento ya está cargado, inicializa directamente
+    initAuth(); // Llama a la función principal de inicialización de autenticación
 }
 
 // Exportamos las funciones que podrían ser necesarias en otros módulos

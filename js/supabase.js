@@ -83,9 +83,6 @@ async function getCourses()
     // Utilizamos un bloque try-catch para manejar posibles errores durante la obtención de los cursos
     try 
     {
-        // Verificamos que haya una sesión activa antes de hacer la consulta
-        const { data: { session } } = await supabase.auth.getSession();
-        
         // Realizamos una consulta a la tabla 'courses' para obtener todos los cursos disponibles
         const { data: courses, error } = await supabase.from('courses').select('*').order('title')
         
