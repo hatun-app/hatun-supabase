@@ -1,6 +1,7 @@
-//
+// Módulo de utilidades para la aplicación
 
-//
+// Importar Supabase para verificación de sesión
+import { supabase } from './supabase.js';
 const initApp = async () => 
 {
     //
@@ -739,47 +740,60 @@ export function setupNavigationEvents()
     }
 }
 
-//
+// Función para verificar autenticación usando Supabase session
 export async function checkAuth() 
 {
-    //
-    let user = null;
-    
-    //
-    const userStr = localStorage.getItem('user');
+    try {
+        // Verificar la sesión actual en Supabase
+        const { data: { session }, error } = await supabase.auth.getSession();
         
-    //
-    if (userStr) user = JSON.parse(userStr);
-    
-    //
-    const currentPath = window.location.pathname;
-    
-    //
-    const loginPath = '/login.html';
-    
-    //
-    if (!user && !currentPath.endsWith(loginPath)) 
-    {
-        //
-        const safeLoginUrl = loginPath;
-        
-        //
-        if (safeLoginUrl) 
-        {
-            //
-            window.location.href = safeLoginUrl;
-            
-            //
+        // Si hay error al obtener la sesión
+        if (error) {
+            console.error('Error al verificar sesión:', error);
+            // Limpiar localStorage si hay error de sesión
+            localStorage.removeItem('user');
             return false;
-        } else 
-        {
-            //
-            throw new Error('Error de configuración de autenticación');
         }
+        
+        // Verificar si hay una sesión válida
+        if (!session || !session.user) {
+            // No hay sesión válida, limpiar localStorage
+            localStorage.removeItem('user');
+            
+            // Verificar si estamos en la página de login
+            const currentPath = window.location.pathname;
+            const loginPath = '/login.html';
+            
+            if (!currentPath.endsWith(loginPath)) {
+                // Redirigir al login si no estamos ya ahí
+                window.location.href = loginPath;
+                return false;
+            }
+            return false;
+        }
+        
+        // Sesión válida - actualizar localStorage con datos actuales
+        const userData = {
+            id: session.user.id,
+            email: session.user.email || '',
+            user_metadata: session.user.user_metadata || {}
+        };
+        localStorage.setItem('user', JSON.stringify(userData));
+        
+        return true;
+    } catch (error) {
+        console.error('Error en checkAuth:', error);
+        // En caso de error, limpiar localStorage y redirigir al login
+        localStorage.removeItem('user');
+        
+        const currentPath = window.location.pathname;
+        const loginPath = '/login.html';
+        
+        if (!currentPath.endsWith(loginPath)) {
+            window.location.href = loginPath;
+        }
+        return false;
     }
-
-    //
-    return true;
 }
 
 if (document.readyState === 'loading') 
